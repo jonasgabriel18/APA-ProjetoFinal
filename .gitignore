@@ -33,3 +33,4 @@
 
 *.txt
 .vscode
+bin/

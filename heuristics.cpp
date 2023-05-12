@@ -101,7 +101,7 @@ vector<vector<int>> gerarSolucaoGulosa(int n, int m, vector<int> vetor, vector<v
 	return linhasProducao;
 }
 
-int solution_time(vector<vector<int>> solution, vector<vector<int>> maintance, vector<int> products) {
+vector<int> solution_time(vector<vector<int>> solution, vector<vector<int>> maintance, vector<int> products) {
 	vector<int> curr_line_times;
 
 	for(int i = 0; i < solution.size(); i++) {
@@ -119,5 +119,49 @@ int solution_time(vector<vector<int>> solution, vector<vector<int>> maintance, v
 		curr_line_times.push_back(curr_time);
 	}
 
-	return *max_element(curr_line_times.begin(), curr_line_times.end());
+	return curr_line_times;
+}
+
+vector<vector<int>> swap_products_between_lines(vector<vector<int>> solution, vector<vector<int>> maintance, vector<int> products, vector<int> solution_times) {
+    vector<vector<int>> best_solution(solution);
+    int best_solution_time = *max_element(solution_times.begin(), solution_times.end());
+
+    for(int i = 0; i < solution.size(); i++) {
+        vector<int> curr_solution_times(solution_times);
+        
+        for(int j = 0; j < solution[i].size(); j++) {
+
+            for (int k = i+1; k < solution.size(); k++) {
+                int curr_product = solution[i][j];
+                
+                for(int l = 0; l < solution[k].size(); l++) {
+                    vector<vector<int>> curr_solution(solution);
+                    int substitute = solution[k][l];
+                    curr_solution[i][j] = substitute;
+                    curr_solution[k][l] = curr_product;
+
+                    //Calcular impacto
+                    curr_solution_times[i] -= products[curr_product] + products[substitute];
+                    if(i != solution.size()-1) {
+                        int next_product = solution[i+1][j+1];
+                        curr_solution_times[i] += maintance[substitute][next_product];
+                    }
+                    
+                    curr_solution_times[k] -= products[substitute] + products[curr_product] ;
+                    if(k != solution.size()-1) {
+                        int next_product = solution[k+1][l+1];
+                        curr_solution_times[k] += maintance[curr_product][next_product];
+                    }
+                    
+                    int curr_solution_value = *max_element(curr_solution_times.begin(), curr_solution_times.end());
+                    if (curr_solution_value < best_solution_time) {
+                        best_solution_time = curr_solution_value;
+                        best_solution = curr_solution;
+                    }
+                }
+            }
+        }
+    }
+
+    return best_solution;
 }
