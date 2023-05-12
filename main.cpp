@@ -1,11 +1,12 @@
 #include "funcoes.h"
+#include "f_heuristics.h"
 
 using namespace std;
 
 int main()
 {
     // Definindo o endereço do arquivo
-    string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
+    string localArquivo = "arquivo.txt";
 
     // Chamando a função para definir as informações do arquivo
     tuple<int, int, vector<int>, vector<vector<int>>> informacoes = definirInformacoesArquivo(localArquivo);
@@ -49,6 +50,9 @@ int main()
         }
         cout << endl;
     }
+
+    int valor = solution_time(solucao, matriz, vetorT);
+    cout << valor << "\n";
 
     return 0;
 }
