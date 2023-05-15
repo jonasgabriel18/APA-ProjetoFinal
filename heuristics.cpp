@@ -113,7 +113,7 @@ vector<int> solution_time(vector<vector<int>> solution, vector<vector<int>> main
 			if(j != solution[i].size()-1) {
 				int next_product_index = solution[i][j+1];
 				int next_product = products[next_product_index];
-				curr_time += maintance[curr_product][next_product];
+				curr_time += maintance[curr_product_index][next_product_index];
 			}
 		}
 		curr_line_times.push_back(curr_time);
@@ -127,7 +127,6 @@ vector<vector<int>> swap_products_between_lines(vector<vector<int>> solution, ve
     int best_solution_time = *max_element(solution_times.begin(), solution_times.end());
 
     for(int i = 0; i < solution.size(); i++) {
-        vector<int> curr_solution_times(solution_times);
         
         for(int j = 0; j < solution[i].size(); j++) {
 
@@ -136,24 +135,51 @@ vector<vector<int>> swap_products_between_lines(vector<vector<int>> solution, ve
                 
                 for(int l = 0; l < solution[k].size(); l++) {
                     vector<vector<int>> curr_solution(solution);
+					vector<int> curr_solution_times(solution_times);
                     int substitute = solution[k][l];
                     curr_solution[i][j] = substitute;
                     curr_solution[k][l] = curr_product;
 
-                    //Calcular impacto
-                    curr_solution_times[i] -= products[curr_product] + products[substitute];
-                    if(i != solution.size()-1) {
-                        int next_product = solution[i+1][j+1];
-                        curr_solution_times[i] += maintance[substitute][next_product];
-                    }
+                    //Calcular impacto da substituição dos produtos nas linhas que foram alteradas
+
+                    curr_solution_times[i] -= products[curr_product]; //Remove o tempo do produto substituido
+					curr_solution_times[i] += products[substitute]; //Adiciona o tempo do produto adicionado
+                    if(j != 0) {
+						//Caso o produto não esteja no começo, remove e adiciona os novos tempos de manutenção de acordo com o produto anterior
+						int previous_product = solution[i][j-1];
+						curr_solution_times[i] -= maintance[previous_product][curr_product] + maintance[previous_product][curr_product];
+                    } else if(j != solution[i].size()-1) {
+						//Caso o produto não esteja no final da linha, remove e adiciona os novos tempos de manutenção de acordo com o proximo produto
+						int next_product = solution[i][j+1];
+						curr_solution_times[i] += maintance[substitute][next_product] - maintance[curr_product][next_product];
+					}
+					else {
+						//Caso o produto esteja no meio da linha, remove e adiciona a manutenção do produto anterior e posterior
+						int next_product = solution[i][j+1];
+						int previous_product = solution[i][j-1];
+						curr_solution_times[i] -= maintance[previous_product][curr_product] + maintance[previous_product][curr_product];
+						curr_solution_times[i] += maintance[substitute][next_product] - maintance[curr_product][next_product];
+					}
                     
-                    curr_solution_times[k] -= products[substitute] + products[curr_product] ;
-                    if(k != solution.size()-1) {
-                        int next_product = solution[k+1][l+1];
-                        curr_solution_times[k] += maintance[curr_product][next_product];
-                    }
+                    curr_solution_times[k] -= products[substitute];
+					curr_solution_times[k] += products[curr_product];
+                    if(l != 0) {
+						int previous_product = solution[k][l-1];
+						curr_solution_times[k] -= maintance[previous_product][curr_product] + maintance[previous_product][curr_product];
+                    } else if(l != solution[k].size()-1) {
+						int next_product = solution[k][l+1];
+						curr_solution_times[k] += maintance[substitute][next_product] - maintance[curr_product][next_product];
+					}
+					else {
+						int next_product = solution[k][l+1];
+						int previous_product = solution[k][l-1];
+						curr_solution_times[k] -= maintance[previous_product][curr_product] + maintance[previous_product][curr_product];
+						curr_solution_times[k] += maintance[substitute][next_product] - maintance[curr_product][next_product];
+					}
                     
+				    //curr_solution_times = solution_time(curr_solution, maintance, products);
                     int curr_solution_value = *max_element(curr_solution_times.begin(), curr_solution_times.end());
+		
                     if (curr_solution_value < best_solution_time) {
                         best_solution_time = curr_solution_value;
                         best_solution = curr_solution;
