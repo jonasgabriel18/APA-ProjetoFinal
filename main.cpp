@@ -56,13 +56,26 @@ int main()
 
     std::vector<vector<int>> teste = swap_products_between_lines(solucao, matriz, vetorT, valores);
     std::vector<int> novo_tempo = solution_time(teste, matriz, vetorT);
-    cout << "Novo tempo: " << *max_element(novo_tempo.begin(), novo_tempo.end()) << "\n";
+    cout << "Novo tempo do movimento vertical: " << *max_element(novo_tempo.begin(), novo_tempo.end()) << "\n";
 
      for (int i = 0; i < numeroLinhas; i++)
     {
         for (int j = 0; j < teste[i].size(); j++)
         {
             cout << teste[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    std::vector<vector<int>> teste2 = swap_products_same_line(solucao, matriz, vetorT, valores);
+    std::vector<int> novo_tempo2 = solution_time(teste2, matriz, vetorT);
+    cout << "Novo tempo do movimento vertical: " << *max_element(novo_tempo2.begin(), novo_tempo2.end()) << "\n";
+
+    for (int i = 0; i < numeroLinhas; i++)
+    {
+        for (int j = 0; j < teste2[i].size(); j++)
+        {
+            cout << teste2[i][j] << " ";
         }
         cout << endl;
     }
