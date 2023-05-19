@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include <algorithm>
 
 bool tentarCast(std::string linha);
 int castStringDado(std::string linha);

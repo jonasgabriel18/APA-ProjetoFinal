@@ -5,81 +5,56 @@ using namespace std;
 
 int main()
 {
+
+    // # Manipulação do Arquivo
+
     // Definindo o endereço do arquivo
-    string localArquivo = "arquivo.txt";
+    // string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
+    string localArquivo = "S:/Programming/C++/APA/n15m3_A.txt";
 
     // Chamando a função para definir as informações do arquivo
-    tuple<int, int, vector<int>, vector<vector<int>>> informacoes = definirInformacoesArquivo(localArquivo);
+    tuple<int, int, vector<int>, vector<vector<int>>>
+        informacoes = definirInformacoesArquivo(localArquivo);
 
     // Extraindo as informações retornadas pela função
     int numeroLinhas = get<0>(informacoes);
     int numeroProdutos = get<1>(informacoes);
-    vector<int> vetorT = get<2>(informacoes);
-    vector<vector<int>> matriz = get<3>(informacoes);
+    vector<int> vetorProdutos = get<2>(informacoes);
+    vector<vector<int>> matrizPreparacao = get<3>(informacoes);
+
+    cout << "\n=============== \n"
+         << endl;
 
     // Imprimindo as informações extraídas
     cout << "Numero de linhas: " << numeroLinhas << endl;
     cout << "Numero de produtos: " << numeroProdutos << endl;
 
-    cout << "Vetor T: ";
-    for (int i = 0; i < vetorT.size(); i++)
-    {
-        cout << vetorT[i] << " ";
-    }
-    cout << endl;
+    cout << "\n=============== \n"
+         << endl;
 
-    cout << "Matriz: " << endl;
-    for (int i = 0; i < matriz.size(); i++)
-    {
-        for (int j = 0; j < matriz[i].size(); j++)
-        {
-            cout << matriz[i][j] << " ";
-        }
-        cout << endl;
-    }
+    // # Algoritmo Guloso
 
-    vector<vector<int>> solucao = gerarSolucaoGulosa(numeroProdutos, numeroLinhas, vetorT, matriz);
+    vector<vector<int>> solucaoGulosa = gerarSolucaoGulosa(numeroProdutos, numeroLinhas, vetorProdutos, matrizPreparacao);
+    vector<int> tempos = temposProducao(solucaoGulosa, matrizPreparacao, vetorProdutos);
+    cout << "Guloso: " << *max_element(tempos.begin(), tempos.end()) << endl;
 
-    cout << ". \n";
+    // * Guloso + VND
 
-    for (int i = 0; i < numeroLinhas; i++)
-    {
-        for (int j = 0; j < solucao[i].size(); j++)
-        {
-            cout << solucao[i][j] << " ";
-        }
-        cout << endl;
-    }
+    vector<vector<int>> solucaoMelhorada = melhorarLinhas(solucaoGulosa, matrizPreparacao, vetorProdutos, tempos);
+    vector<int> temposMelhorados = temposProducao(solucaoMelhorada, matrizPreparacao, vetorProdutos);
+    cout << "Guloso + VND: " << *max_element(temposMelhorados.begin(), temposMelhorados.end()) << endl;
 
-    std::vector<int> valores = solution_time(solucao, matriz, vetorT);
-    cout << *max_element(valores.begin(), valores.end()) << "\n";
+    // | Meta-heurística: GRASP
 
-    std::vector<vector<int>> teste = swap_products_between_lines(solucao, matriz, vetorT, valores);
-    std::vector<int> novo_tempo = solution_time(teste, matriz, vetorT);
-    cout << "Novo tempo do movimento vertical: " << *max_element(novo_tempo.begin(), novo_tempo.end()) << "\n";
+    vector<vector<int>> solucaoGRASP = heuristicaGRASP(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos);
+    vector<int> temposGRASP = temposProducao(solucaoGRASP, matrizPreparacao, vetorProdutos);
+    cout << "GRASP: " << *max_element(temposGRASP.begin(), temposGRASP.end()) << endl;
 
-     for (int i = 0; i < numeroLinhas; i++)
-    {
-        for (int j = 0; j < teste[i].size(); j++)
-        {
-            cout << teste[i][j] << " ";
-        }
-        cout << endl;
-    }
+    // | Meta-heurística: ILS
 
-    std::vector<vector<int>> teste2 = swap_products_same_line(solucao, matriz, vetorT, valores);
-    std::vector<int> novo_tempo2 = solution_time(teste2, matriz, vetorT);
-    cout << "Novo tempo do movimento vertical: " << *max_element(novo_tempo2.begin(), novo_tempo2.end()) << "\n";
-
-    for (int i = 0; i < numeroLinhas; i++)
-    {
-        for (int j = 0; j < teste2[i].size(); j++)
-        {
-            cout << teste2[i][j] << " ";
-        }
-        cout << endl;
-    }
-
+    vector<vector<int>> solucaoILS = heuristicaILS(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos);
+    vector<int> temposILS = temposProducao(solucaoILS, matrizPreparacao, vetorProdutos);
+    cout << "ILS:" << *max_element(temposILS.begin(), temposILS.end()) << endl;
 
     return 0;
 }

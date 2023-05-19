@@ -60,8 +60,11 @@ vector<int> castStringVetor(string linha)
 			temporaria = temporaria + linha[i];
 		}
 	}
+
 	// Adiciona o último número da string temporária ao vetor
-	vetor.push_back(stoi(temporaria));
+	castPossivel = tentarCast(temporaria);
+	if (castPossivel)
+		vetor.push_back(stoi(temporaria));
 
 	return vetor;
 }
@@ -79,10 +82,6 @@ tuple<int, int, vector<int>, vector<vector<int>>> definirInformacoesArquivo(stri
 
 	if (arquivo.is_open())
 	{
-		cout << "Arquivo aberto!" << endl;
-		cout << "=============== \n"
-			 << endl;
-
 		int contadorLinhas = 0;
 
 		string linha;
@@ -109,7 +108,7 @@ tuple<int, int, vector<int>, vector<vector<int>>> definirInformacoesArquivo(stri
 				// Linha 5 do arquivo não é utilizada
 				break;
 			default:
-				// Linhas restantes contêm a matriz de tempo de limpeza entre a produção de um produtos e os outros
+				// Linhas restantes contêm a matriz de tempo de limpeza entre a produção de um produto e os outros
 				vetorTemporario = castStringVetor(linha);
 				vetorGeral.insert(vetorGeral.end(), vetorTemporario.begin(), vetorTemporario.end());
 				break;
@@ -134,4 +133,3 @@ tuple<int, int, vector<int>, vector<vector<int>>> definirInformacoesArquivo(stri
 
 	return make_tuple(numeroLinhas, numeroProdutos, vetorTempoProducao, matriz);
 }
-
