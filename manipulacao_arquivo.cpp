@@ -5,6 +5,7 @@ using namespace std;
 // Função para tentar fazer o cast de uma string para int
 bool tentarCast(string linha)
 {
+	// Tenta fazer o cast da string para int
 	int valor;
 	try
 	{
@@ -26,6 +27,7 @@ bool tentarCast(string linha)
 // Função para converter uma string para um número inteiro
 int castStringDado(string linha)
 {
+	// Verifica se é possível fazer o cast da string para int
 	bool castPossivel = tentarCast(linha);
 	if (castPossivel)
 		return stoi(linha);
@@ -72,14 +74,17 @@ vector<int> castStringVetor(string linha)
 // Função que lê o arquivo e retorna as informações em uma tupla
 tuple<int, int, vector<int>, vector<vector<int>>> definirInformacoesArquivo(string localArquivo)
 {
+	// Abre o arquivo
 	ifstream arquivo(localArquivo);
 
+	// Declara as variáveis que serão preenchidas com as informações do arquivo
 	int numeroLinhas, numeroProdutos;
 	vector<int> vetorTempoProducao;
 	vector<int> vetorGeral;
 	vector<int> vetorTemporario;
 	vector<vector<int>> matriz;
 
+	// Verifica se o arquivo foi aberto com sucesso
 	if (arquivo.is_open())
 	{
 		int contadorLinhas = 0;
@@ -124,12 +129,15 @@ tuple<int, int, vector<int>, vector<vector<int>>> definirInformacoesArquivo(stri
 	}
 	else
 	{
+		// Se não foi possível abrir o arquivo, exibe uma mensagem de erro e encerra o programa
 		cout << "Falha ao abrir arquivo!";
 		arquivo.close();
 		exit(0);
 	}
 
+	// Fecha o arquivo
 	arquivo.close();
 
+	// Retorna as informações lidas do arquivo em uma tupla
 	return make_tuple(numeroLinhas, numeroProdutos, vetorTempoProducao, matriz);
 }
