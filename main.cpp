@@ -13,7 +13,7 @@ int main()
 
     // Definindo o endereço do arquivo
     // string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-    string localArquivo = "S:/Programming/C++/APA/n15m3_A.txt";
+    string localArquivo = "./instancias/n10m2_B.txt";
     // string localArquivo = "S:/Programming/C++/APA/n52m5_A.txt";
     // string localArquivo = "S:/Programming/C++/APA/n500m10_A.txt";
 
@@ -75,6 +75,7 @@ int main()
     // * Guloso + RVND
 
     // Obter o tempo atual antes do início da execução
+    
     auto inicioRVND = chrono::high_resolution_clock::now();
 
     vector<vector<int>> solucaoMelhoradaRVND = melhorarLinhasRVND(solucaoGulosa, matrizPreparacao, vetorProdutos, tempos);
