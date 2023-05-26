@@ -13,8 +13,8 @@ int main()
 
     // Definindo o endereço do arquivo
     // string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-    string localArquivo = "./instancias/n10m2_B.txt";
-    // string localArquivo = "S:/Programming/C++/APA/n52m5_A.txt";
+//     string localArquivo = "S:/Programming/C++/APA/n10m2_A.txt";
+    string localArquivo = "S:/Programming/C++/APA/n52m5_A.txt";
     // string localArquivo = "S:/Programming/C++/APA/n500m10_A.txt";
 
     // Chamando a função para definir as informações do arquivo
@@ -34,7 +34,8 @@ int main()
     cout << "Numero de linhas: " << numeroLinhas << endl;
     cout << "Numero de produtos: " << numeroProdutos << endl;
 
-    cout << "\n=============== \n" << endl;
+    cout << "\n=============== \n"
+         << endl;
 
     // # Algoritmo Guloso
 
@@ -75,7 +76,7 @@ int main()
     // * Guloso + RVND
 
     // Obter o tempo atual antes do início da execução
-    
+
     auto inicioRVND = chrono::high_resolution_clock::now();
 
     vector<vector<int>> solucaoMelhoradaRVND = melhorarLinhasRVND(solucaoGulosa, matrizPreparacao, vetorProdutos, tempos);
