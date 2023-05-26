@@ -163,51 +163,56 @@ vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> solucao, vector
                 solucaoCopia[i][j] = produtoSubs;
                 solucaoCopia[i][k] = produtoAtual;
 
-                int prox_prodAtual = solucao[i][j + 1];
-                int ant_prodSubs = solucao[i][k - 1];
+                int ant_prodAtual = solucaoCopia[i][j - 1];
+                int prox_prodAtual = solucaoCopia[i][j + 1];
+
+                int ant_prodSubs = solucaoCopia[i][k - 1];
+                int prox_prodSubs = solucaoCopia[i][k + 1];
 
                 // Se o produtoAtual é o 1° da linha
                 if (j == 0)
                 {
-
-                    // Se o produto que será trocado com o produtoAtual não é o último
-                    if (k < solucaoCopia[i].size() - 1)
-                    {
-                        int prox_prodSubs = solucao[i][k + 1];
-
-                        temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodSubs][produtoSubs] + matrizPreparacao[produtoSubs][prox_prodSubs]);
-                        temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodSubs][produtoAtual] + matrizPreparacao[produtoAtual][prox_prodSubs]);
-                    }
-
-                    // Se o produto que será trocado com o produtoAtual é o último
-                    else
-                    {
-                        temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodSubs][produtoSubs]);
-                        temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodSubs][produtoAtual]);
-                    }
+                    temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
                 }
 
-                // Se o produtoAtual não é o 1° da linha
+                // Se o produtoAtual é o último da linha
+                else if (j == solucaoCopia[i].size() - 1)
+                {
+                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+                }
+
+                // Se o produtoAtual está entre o 1° e o último
                 else
                 {
-                    int ant_prodAtual = solucao[i][j - 1];
+                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+                    temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
+                }
 
-                    if (k < solucaoCopia[i].size() - 1)
-                    {
-                        int prox_prodSubs = solucao[i][k + 1];
+                // Se o produtoSubs é o 1° produto após o produtoAtual
+                if (k == j + 1 && k != solucaoCopia[i].size() - 1)
+                {
+                    temposSolucaoAtual[i] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+                    temposSolucaoAtual[i] += matrizPreparacao[produtoAtual][prox_prodSubs];
+                }
 
-                        temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoAtual] + matrizPreparacao[ant_prodSubs][produtoSubs] + matrizPreparacao[produtoSubs][prox_prodSubs]);
-                        temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoSubs] + matrizPreparacao[ant_prodSubs][produtoAtual] + matrizPreparacao[produtoAtual][prox_prodSubs]);
-                    }
-                    else
-                    {
-                        temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoAtual] + matrizPreparacao[ant_prodSubs][produtoSubs]);
-                        temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoSubs] + matrizPreparacao[ant_prodSubs][produtoAtual]);
-                    }
+                // Se o produtoSubs é o último da linha
+                else if (k == solucaoCopia[i].size() - 1)
+                {
+                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+                    temposSolucaoAtual[i] += matrizPreparacao[ant_prodSubs][produtoAtual];
+                }
+
+                // Se o produtoSubs está entre o produtoAtual e o último
+                else
+                {
+                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+                    temposSolucaoAtual[i] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+                    temposSolucaoAtual[i] += matrizPreparacao[ant_prodSubs][produtoAtual];
+                    temposSolucaoAtual[i] += matrizPreparacao[produtoAtual][prox_prodSubs];
                 }
 
                 // Constrói uma solução possível com as trocas feitas
-                // vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
                 int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
 
                 // Verifica se a solução possível tem um tempo total menor que o tempo atual
@@ -236,11 +241,11 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
     // Cópia das linhas de produção para realizar as trocas
     vector<vector<int>> solucaoCopia = solucao;
 
-    for (int i = 0; i < solucao.size(); i++)
+    for (int i = 0; i < solucaoCopia.size(); i++)
     {
         for (int j = 0; j < solucaoCopia[i].size(); j++)
         {
-            for (int k = i + 1; k < solucao.size(); k++)
+            for (int k = i + 1; k < solucaoCopia.size(); k++)
             {
                 // Produto atual da linha i
                 int produtoAtual = solucaoCopia[i][j];
@@ -258,58 +263,69 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
                     // Avalia a nova configuração das linhas de produção
                     // vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
                     vector<int> temposSolucaoAtual = temposSolucao;
+
+                    // Removendo o tempo de produtoAtual na linha dele
+                    // Adicionando o tempo de produtoSubs na linha
                     temposSolucaoAtual[i] -= vetorProdutos[produtoAtual];
                     temposSolucaoAtual[i] += vetorProdutos[produtoSubs];
 
+                    // Removendo o tempo de produtoSubs na linha dele
+                    // Adicionando o tempo de produtoAtual na linha
                     temposSolucaoAtual[k] -= vetorProdutos[produtoSubs];
                     temposSolucaoAtual[k] += vetorProdutos[produtoAtual];
 
-                    int prox_prodAtual = solucao[i][j + 1];
-                    int ant_prodSubs = solucao[k][l - 1];
+                    int ant_prodAtual = solucaoCopia[i][j - 1];
+                    int prox_prodAtual = solucaoCopia[i][j + 1];
 
+                    int ant_prodSubs = solucaoCopia[i][k - 1];
+                    int prox_prodSubs = solucaoCopia[i][k + 1];
+
+                    // Se o produtoAtual é o 1° da linha
                     if (j == 0)
                     {
-                        if (l < solucaoCopia[k].size() - 1)
-                        {
-                            int prox_prodSubs = solucao[k][l + 1];
-
-                            temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                            temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
-
-                            temposSolucaoAtual[k] -= (matrizPreparacao[ant_prodSubs][produtoSubs] + matrizPreparacao[produtoSubs][prox_prodSubs]);
-                            temposSolucaoAtual[k] += (matrizPreparacao[ant_prodSubs][produtoAtual] + matrizPreparacao[produtoAtual][prox_prodSubs]);
-                        }
-                        else
-                        {
-                            temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                            temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
-
-                            temposSolucaoAtual[k] -= (matrizPreparacao[ant_prodSubs][produtoSubs]);
-                            temposSolucaoAtual[k] += (matrizPreparacao[ant_prodSubs][produtoAtual]);
-                        }
+                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
+                        temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
                     }
+
+                    // Se o produtoAtual é o último da linha
+                    else if (j == solucaoCopia[i].size() - 1)
+                    {
+                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][produtoSubs];
+                    }
+
+                    // Se o produtoAtual está entre o 1° e o último
                     else
                     {
-                        int ant_prodAtual = solucao[i][j - 1];
+                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
 
-                        if (l < solucaoCopia[k].size() - 1)
-                        {
-                            int prox_prodSubs = solucao[k][l + 1];
+                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][produtoSubs];
+                        temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
+                    }
 
-                            temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoAtual]);
-                            temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoSubs]);
+                    // Se produtoSubs é o 1° da linha
+                    if (l == 0)
+                    {
+                        temposSolucaoAtual[k] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][prox_prodSubs];
+                    }
 
-                            temposSolucaoAtual[k] -= (matrizPreparacao[ant_prodSubs][produtoSubs] + matrizPreparacao[produtoSubs][prox_prodSubs]);
-                            temposSolucaoAtual[k] += (matrizPreparacao[ant_prodSubs][produtoAtual] + matrizPreparacao[produtoAtual][prox_prodSubs]);
-                        }
-                        else
-                        {
-                            temposSolucaoAtual[i] -= (matrizPreparacao[produtoAtual][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoAtual]);
-                            temposSolucaoAtual[i] += (matrizPreparacao[produtoSubs][prox_prodAtual] + matrizPreparacao[ant_prodAtual][produtoSubs]);
+                    // Se produtoSubs é o último da linha
+                    else if (l == solucaoCopia[k].size() - 1)
+                    {
+                        temposSolucaoAtual[k] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+                        temposSolucaoAtual[k] += matrizPreparacao[ant_prodSubs][produtoAtual];
+                    }
 
-                            temposSolucaoAtual[k] -= (matrizPreparacao[ant_prodSubs][produtoSubs]);
-                            temposSolucaoAtual[k] += (matrizPreparacao[ant_prodSubs][produtoAtual]);
-                        }
+                    // Se produtoSubs está entre o 1° e o último
+                    else
+                    {
+                        temposSolucaoAtual[k] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+                        temposSolucaoAtual[k] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+                        temposSolucaoAtual[k] += matrizPreparacao[ant_prodSubs][produtoAtual];
+                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][prox_prodSubs];
                     }
 
                     int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
@@ -325,6 +341,7 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
                     // Desfaz a troca para a próxima iteração do loop
                     solucaoCopia[i][j] = produtoAtual;
                     solucaoCopia[k][l] = produtoSubs;
+
                 }
             }
         }
@@ -340,18 +357,24 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
     vector<vector<int>> melhorSolucao = solucao;
     vector<vector<int>> solucaoCopia = solucao;
 
-    for (int i = 0; i < solucao.size(); i++)
+    for (int i = 0; i < solucaoCopia.size(); i++)
     {
-        for (int j = 0; j < solucao[i].size(); j++)
+        for (int j = 0; j < solucaoCopia[i].size(); j++)
         {
             int produtoAtual = solucaoCopia[i][j];
 
-            for (int k = i + 1; k < solucao.size(); k++)
+            for (int k = i + 1; k < solucaoCopia.size(); k++)
             {
                 for (int l = 0; l < solucaoCopia[k].size(); l++)
                 {
 
                     vector<int> temposSolucaoAtual = temposSolucao;
+
+                    int ant_prodAtual = solucaoCopia[i][j - 1];
+                    int prox_prodAtual = solucaoCopia[i][j + 1];
+
+                    int ant_prodSubs = solucaoCopia[i][k - 1];
+                    int prox_prodSubs = solucaoCopia[i][k + 1];
 
                     // Remover o tempo do produtoAtual e suas conexões da linha que ele está
                     temposSolucaoAtual[i] -= vetorProdutos[produtoAtual];
@@ -359,27 +382,22 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
                     // Se o produtoAtual for o 1° da linha
                     if (j == 0)
                     {
-                        int produtoSeguinte = solucaoCopia[i][j + 1];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][produtoSeguinte];
+                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
                     }
 
                     // Se o produtoAtual for o último da linha
-                    else if (j == solucao[i].size() - 1)
+                    else if (j == solucaoCopia[i].size() - 1)
                     {
-                        int produtoAnterior = solucaoCopia[i][j - 1];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAnterior][produtoAtual];
+                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
                     }
 
                     // Se o produtoAtual está entre o 1° e o último
                     else
                     {
-                        int produtoAnterior = solucaoCopia[i][j - 1];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAnterior][produtoAtual];
+                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
 
-                        int produtoSeguinte = solucaoCopia[i][j + 1];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][produtoSeguinte];
-
-                        temposSolucaoAtual[i] += matrizPreparacao[produtoAnterior][produtoSeguinte];
+                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][prox_prodAtual];
                     }
 
                     // Adicionando o tempo de produtoAtual e suas conexões na linha em questão
@@ -646,8 +664,8 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
@@ -734,17 +752,18 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
             break;
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
-            possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
-            possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         }
 

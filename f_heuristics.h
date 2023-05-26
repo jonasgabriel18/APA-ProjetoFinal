@@ -17,13 +17,12 @@ std::vector<int> temposProducao(std::vector<std::vector<int>> solucao, std::vect
 
 std::vector<std::vector<int>> trocarProdutosMesmaLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
 std::vector<std::vector<int>> trocarProdutosEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> inserirProdutoEmOutrasPosicoes(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> solution_times);
+std::vector<std::vector<int>> inserirProdutoEmOutrasPosicoes(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
 
-std::vector<std::vector<int>> movimentoInverter(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> solution_times);
-std::vector<std::vector<int>> movimentoInsercao(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> solution_times);
-
-std::vector<std::vector<int>> movimentoHorizontal(std::vector<std::vector<int>> solucao, std::vector<int> vetorProdutos, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> movimentoVertical(std::vector<std::vector<int>> solucao, std::vector<int> vetorProdutos, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> movimentoHorizontal(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> movimentoVertical(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> movimentoInverter(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> movimentoInsercao(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
 
 std::vector<std::vector<int>> melhorarLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> tempos);
 std::vector<std::vector<int>> melhorarLinhasRVND(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> tempos);
