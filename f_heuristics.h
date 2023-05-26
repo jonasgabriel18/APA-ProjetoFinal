@@ -31,4 +31,8 @@ std::vector<std::vector<int>> heuristicaGRASP(std::vector<int> &vetorProdutos, s
 std::vector<std::vector<int>> pertubacao(std::vector<std::vector<int>> &solucao, int numeroLinhas);
 std::vector<std::vector<int>> heuristicaILS(std::vector<int> &vetorProdutos, std::vector<std::vector<int>> &matrizPreparacao, int numeroLinhas, int produtos, int numeroIteracoes);
 
+int calculoCustoNovoLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao, int linha, int indexProdAtual, int indexProdSubs);
+std::vector<int> buscaMelhorCusto(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> novaSolucaoMesmaLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
+
 #endif

@@ -13,9 +13,10 @@ int main()
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-	// string localArquivo = "./instancias/n10m2_B.txt";
-	// string localArquivo = "./instancias/n52m5_A.txt";
-	string localArquivo = "./instancias/n500m10_A.txt";
+	//string localArquivo = "./instancias/n10m2_A.txt";
+	//string localArquivo = "./instancias/n52m5_A.txt";
+	//string localArquivo = "./instancias/n500m10_A.txt";
+    string localArquivo = "./arquivo.txt";
 
 	// Chamando a função para definir as informações do arquivo
 	tuple<int, int, vector<int>, vector<vector<int>>>
@@ -165,6 +166,16 @@ int main()
 
 	cout << "\n=============== \n"
 		 << endl;
+	
+	/*
+	vector<vector<int>> teste = novaSolucaoMesmaLinha(solucaoGulosa, matrizPreparacao, temposGuloso);
+
+	for(int i = 0; i < teste.size(); i++) {
+		for(int j = 0; j < teste[i].size(); j++) {
+			cout << " " << teste[i][j]; 
+		}
+		cout << endl;
+	} */
 
 	return 0;
 }
