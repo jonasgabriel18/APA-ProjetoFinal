@@ -635,6 +635,7 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
 
 int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao, int linha, int indexProdAtual, int indexProdSubs)
 {
+    
     int custo = temposSolucao[linha];
 
     int produtoAtual = solucao[linha][indexProdAtual];
@@ -654,7 +655,7 @@ int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matri
     }
 
     // Se o produtoAtual é o último da linha
-    else if (indexProdAtual == solucao[indexProdAtual].size() - 1)
+    else if (indexProdAtual == solucao[linha].size() - 1)
     {
         custo -= matrizPreparacao[ant_prodAtual][produtoAtual];
         custo += matrizPreparacao[ant_prodAtual][produtoSubs];
@@ -671,14 +672,14 @@ int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matri
     }
 
     // Se o produtoSubs é o 1° produto após o produtoAtual
-    if (indexProdSubs == indexProdAtual + 1 && indexProdSubs != solucao[indexProdAtual].size() - 1)
+    if (indexProdSubs == indexProdAtual + 1 && indexProdSubs != solucao[linha].size() - 1)
     {
         custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
         custo += matrizPreparacao[produtoAtual][prox_prodSubs];
     }
 
     // Se o produtoSubs é o último da linha
-    else if (indexProdSubs == solucao[indexProdAtual].size() - 1)
+    else if (indexProdSubs == solucao[linha].size() - 1)
     {
         custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
         custo += matrizPreparacao[ant_prodSubs][produtoAtual];
@@ -721,21 +722,29 @@ vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> ma
                     trocaParaFazer[1] = j;
                     trocaParaFazer[2] = k;
                 }
+
             }
         }
     }
-    // cout << "melhor custo: " << melhorCusto << endl;
+
     return trocaParaFazer;
 }
 
 vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao)
 {
+    // cout << "1." << endl;
     vector<int> indicesTroca = buscaMelhorCusto(solucao, matrizPreparacao, temposSolucao);
+    // cout << "2." << endl;
     int linha = indicesTroca[0];
     int indicePrimeiroProd = indicesTroca[1];
     int indiceSubsProd = indicesTroca[2];
 
+    // cout << "3." << endl;
+
     iter_swap(solucao[linha].begin() + indicePrimeiroProd, solucao[linha].begin() + indiceSubsProd);
+
+    // cout << "4." << endl;
+
     return solucao;
 }
 
@@ -990,14 +999,14 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
             // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
             // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         }
 
@@ -1080,20 +1089,20 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
             // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
             // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
             // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         }
 
