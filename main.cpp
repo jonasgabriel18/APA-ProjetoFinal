@@ -167,7 +167,7 @@ int main()
 	cout << "\n=============== \n"
 		 << endl;
 	
-	/*
+	
 	vector<vector<int>> teste = novaSolucaoMesmaLinha(solucaoGulosa, matrizPreparacao, temposGuloso);
 
 	for(int i = 0; i < teste.size(); i++) {
@@ -175,7 +175,17 @@ int main()
 			cout << " " << teste[i][j]; 
 		}
 		cout << endl;
-	} */
+	}
+
+	cout << "\nTESTE 2\n";
+
+	vector<vector<int>> teste2 = novaSolucaoEntreLinhas(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
+	for(int i = 0; i < teste2.size(); i++) {
+		for(int j = 0; j < teste2[i].size(); j++) {
+			cout << " " << teste2[i][j]; 
+		}
+		cout << endl;
+	}
 
 	return 0;
 }

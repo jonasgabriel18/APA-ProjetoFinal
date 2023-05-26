@@ -200,7 +200,7 @@ int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matri
 
 vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao) {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
-    vector<int> trocaParaFazer{0, 0, 0};
+    vector<int> trocaParaFazer{0, 0, 0}; //linha que vai ser modificada, index do primeiro prod, index do prod subs
 
     for(int i = 0; i < solucao.size(); i++) {
         for(int j = 0; j < solucao[i].size(); j++) {
@@ -324,6 +324,103 @@ vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> solucao, vector
     }
 
     return melhorSolucao;
+}
+
+vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs) {
+    vector<int> custos = temposSolucao;
+
+    int produtoAtual = solucao[linhaAtual][indexProdAtual];
+    int produtoSubs = solucao[linhaSubs][indexProdSubs];
+
+    int ant_prodAtual = solucao[linhaAtual][indexProdAtual - 1];
+    int prox_prodAtual = solucao[linhaAtual][indexProdAtual + 1];
+
+    int ant_prodSubs = solucao[linhaSubs][indexProdSubs - 1];
+    int prox_prodSubs = solucao[linhaSubs][indexProdSubs + 1];
+
+    custos[linhaAtual] -= vetorProdutos[produtoAtual];
+    custos[linhaAtual] += vetorProdutos[produtoSubs];
+
+    custos[linhaSubs] -= vetorProdutos[produtoSubs];
+    custos[linhaSubs] += vetorProdutos[produtoAtual];
+
+    if(indexProdAtual == 0) {
+        //Se eh o primeiro
+        custos[linhaAtual] -= matrizPreparacao[produtoAtual][prox_prodAtual];
+        custos[linhaAtual] += matrizPreparacao[produtoSubs][prox_prodAtual];
+
+    } else if(indexProdAtual == solucao[linhaAtual].size()-1) {
+        //O ultimo
+        custos[linhaAtual] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+        custos[linhaAtual] += matrizPreparacao[ant_prodAtual][produtoSubs];
+
+    } else {
+        //Ta no meio da linha
+        custos[linhaAtual] -= matrizPreparacao[ant_prodAtual][produtoAtual];
+        custos[linhaAtual] -= matrizPreparacao[produtoAtual][prox_prodAtual];
+
+        custos[linhaAtual] += matrizPreparacao[ant_prodAtual][produtoSubs];
+        custos[linhaAtual] += matrizPreparacao[produtoSubs][prox_prodAtual];
+    }
+
+    if(indexProdSubs == 0) {
+        //Primeiro
+        custos[linhaSubs] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+        custos[linhaSubs] += matrizPreparacao[produtoAtual][prox_prodSubs];
+
+    } else if(indexProdSubs == solucao[linhaSubs].size()-1) {
+        custos[linhaSubs] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+        custos[linhaSubs] += matrizPreparacao[ant_prodSubs][produtoAtual];
+
+    } else {
+        custos[linhaSubs] -= matrizPreparacao[ant_prodSubs][produtoSubs];
+        custos[linhaSubs] -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+        custos[linhaSubs] += matrizPreparacao[ant_prodSubs][produtoAtual];
+        custos[linhaSubs] += matrizPreparacao[produtoAtual][prox_prodSubs];
+    }
+
+    return custos;
+}
+
+vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao) {
+    int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
+    vector<int> trocaParaFazer{0, 0, 0, 0}; //primeiro linha, linha subs, primeiro prod, prod subs
+
+    for(int i = 0; i < solucao.size(); i++) {
+        for(int j = 0; j < solucao[i].size(); j++) {
+            for(int k = i + 1; k < solucao.size(); k++) {
+                for(int l = 0; l < solucao[k].size(); l++) {
+                    vector<int> temposSolucaoAtual = temposSolucao;
+                    temposSolucaoAtual = calculoCustoNovoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao, i, k, j, l);
+
+                    int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
+
+                    if(custoAtual < melhorCusto) {
+                        melhorCusto = custoAtual;
+                        trocaParaFazer[0] = i;
+                        trocaParaFazer[1] = k;
+                        trocaParaFazer[2] = j;
+                        trocaParaFazer[3] = l;
+                    }
+                }
+            }
+        }
+    }
+
+    cout << "melhor custo entre linhas: " << melhorCusto << endl;
+    return trocaParaFazer;
+}
+
+vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao) {
+    vector<int> indicesTroca = buscaMelhorCustoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao);
+    int linha1 = indicesTroca[0];
+    int linha2 = indicesTroca[1];
+    int indicePrimeiroProd = indicesTroca[2];
+    int indiceSubsProd = indicesTroca[3];
+
+    std::swap(solucao[linha1][indicePrimeiroProd], solucao[linha2][indiceSubsProd]);
+    return solucao;
 }
 
 vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)

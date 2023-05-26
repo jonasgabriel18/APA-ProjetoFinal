@@ -35,4 +35,8 @@ int calculoCustoNovoLinha(std::vector<std::vector<int>> solucao, std::vector<std
 std::vector<int> buscaMelhorCusto(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
 std::vector<std::vector<int>> novaSolucaoMesmaLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
 
+std::vector<int> calculoCustoNovoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs);
+std::vector<int> buscaMelhorCustoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> novaSolucaoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+
 #endif
