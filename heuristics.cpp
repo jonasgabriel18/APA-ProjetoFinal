@@ -434,6 +434,7 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
 
                 for (int l = 0; l < solucaoCopia[k].size(); l++)
                 {
+
                     // Produto a ser substituído da linha k
                     int produtoSubs = solucaoCopia[k][l];
 
@@ -459,8 +460,8 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
                     int ant_prodAtual = solucaoCopia[i][j - 1];
                     int prox_prodAtual = solucaoCopia[i][j + 1];
 
-                    int ant_prodSubs = solucaoCopia[i][k - 1];
-                    int prox_prodSubs = solucaoCopia[i][k + 1];
+                    int ant_prodSubs = solucaoCopia[k][l - 1];
+                    int prox_prodSubs = solucaoCopia[k][l + 1];
 
                     // Se o produtoAtual é o 1° da linha
                     if (j == 0)
@@ -510,6 +511,8 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
                         temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][prox_prodSubs];
                     }
 
+                    // cout << "6." << endl;
+
                     int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
 
                     if (possivelMaiorTempo < tempoAtual)
@@ -520,9 +523,13 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
                         melhorSolucao = solucaoCopia;
                     }
 
+                    // cout << "7." << endl;
+
                     // Desfaz a troca para a próxima iteração do loop
                     solucaoCopia[i][j] = produtoAtual;
                     solucaoCopia[k][l] = produtoSubs;
+
+                    // cout << "8." << endl;
                 }
             }
         }
@@ -554,8 +561,8 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
                     int ant_prodAtual = solucaoCopia[i][j - 1];
                     int prox_prodAtual = solucaoCopia[i][j + 1];
 
-                    int ant_prodSubs = solucaoCopia[i][k - 1];
-                    int prox_prodSubs = solucaoCopia[i][k + 1];
+                    int produtoSeguinte = solucaoCopia[k][l];
+                    int produtoAnterior = solucaoCopia[k][l - 1];
 
                     // Remover o tempo do produtoAtual e suas conexões da linha que ele está
                     temposSolucaoAtual[i] -= vetorProdutos[produtoAtual];
@@ -587,23 +594,18 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
                     // Inserindo o produtoAtual no começo da linha
                     if (l == 0)
                     {
-                        int produtoSeguinte = solucaoCopia[k][l];
                         temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][produtoSeguinte];
                     }
 
                     // Inserindo no final da linha
                     else if (l == solucaoCopia[k].size())
                     {
-                        int produtoAnterior = solucaoCopia[k][l - 1];
                         temposSolucaoAtual[k] += matrizPreparacao[produtoAnterior][produtoAtual];
                     }
 
                     // Inserindo entre o 1° e o último
                     else
                     {
-                        int produtoSeguinte = solucaoCopia[k][l];
-                        int produtoAnterior = solucaoCopia[k][l - 1];
-
                         temposSolucaoAtual[k] -= matrizPreparacao[produtoAnterior][produtoSeguinte];
 
                         temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][produtoSeguinte];
@@ -709,7 +711,6 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
         {
             for (int k = j + 1; k < solucao[i].size(); k++)
             {
-                // cout << "1" << endl;
                 vector<int> temposSolucaoAtual = temposSolucao;
 
                 temposSolucaoAtual[i] = calculoCustoNovoLinha(solucao, matrizPreparacao, temposSolucao, i, j, k);
@@ -723,7 +724,6 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
                     trocaParaFazer[1] = j;
                     trocaParaFazer[2] = k;
                 }
-                // cout << "2" << endl;
             }
         }
     }
@@ -733,18 +733,12 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
 
 vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
-    // cout << "1." << endl;
     vector<int> indicesTroca = buscaMelhorCusto(solucao, matrizPreparacao, temposSolucao);
-    // cout << "2." << endl;
     int linha = indicesTroca[0];
     int indicePrimeiroProd = indicesTroca[1];
     int indiceSubsProd = indicesTroca[2];
 
-    // cout << "3." << endl;
-
     iter_swap(solucao[linha].begin() + indicePrimeiroProd, solucao[linha].begin() + indiceSubsProd);
-
-    // cout << "4." << endl;
 
     return solucao;
 }

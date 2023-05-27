@@ -13,8 +13,8 @@ int main()
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-	string localArquivo = "./instancias/n52m5_B.txt";
-	// string localArquivo = "./instancias/n15m4_A.txt";
+	// string localArquivo = "./instancias/n52m5_B.txt";
+	string localArquivo = "./instancias/n10m2_A.txt";
 	// string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
