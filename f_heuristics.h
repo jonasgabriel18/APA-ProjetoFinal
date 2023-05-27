@@ -37,16 +37,16 @@ std::vector<std::vector<int>> grasp(std::vector<std::vector<int>> matrizPreparac
 
 std::vector<std::vector<int>> ils(std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, int numeroLinhas, int numeroIteracoes);
 
-int calculoCustoNovoLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao, int linha, int indexProdAtual, int indexProdSubs);
-std::vector<int> buscaMelhorCusto(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> novaSolucaoMesmaLinha(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> temposSolucao);
+int calculoCustoNovoLinha(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &temposSolucao, int linha, int indexProdAtual, int indexProdSubs);
+std::vector<int> buscaMelhorCusto(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &temposSolucao);
+std::vector<std::vector<int>> novaSolucaoMesmaLinha(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &temposSolucao);
 
-std::vector<int> calculoCustoNovoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs);
-std::vector<int> buscaMelhorCustoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> novaSolucaoEntreLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<int> calculoCustoNovoEntreLinhas(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs);
+std::vector<int> buscaMelhorCustoEntreLinhas(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
+std::vector<std::vector<int>> novaSolucaoEntreLinhas(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 
-std::vector<int> calculoCustoNovoReInsertion(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs);
-std::vector<int> buscaMelhorCustoReInsertion(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> novaSolucaoReInsertion(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<int> calculoCustoNovoReInsertion(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs);
+std::vector<int> buscaMelhorCustoReInsertion(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
+std::vector<std::vector<int>> novaSolucaoReInsertion(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 
 #endif

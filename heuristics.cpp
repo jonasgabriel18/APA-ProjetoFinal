@@ -633,9 +633,9 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, 
 
 // * Movimentos de Vizinhanças - Otimizado V2
 
-int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao, int linha, int indexProdAtual, int indexProdSubs)
+int calculoCustoNovoLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao, int linha, int indexProdAtual, int indexProdSubs)
 {
-    
+
     int custo = temposSolucao[linha];
 
     int produtoAtual = solucao[linha][indexProdAtual];
@@ -698,7 +698,7 @@ int calculoCustoNovoLinha(vector<vector<int>> solucao, vector<vector<int>> matri
     return custo;
 }
 
-vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao)
+vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<int> trocaParaFazer{0, 0, 0}; // linha que vai ser modificada, index do primeiro prod, index do prod subs
@@ -709,6 +709,7 @@ vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> ma
         {
             for (int k = j + 1; k < solucao[i].size(); k++)
             {
+                // cout << "1" << endl;
                 vector<int> temposSolucaoAtual = temposSolucao;
 
                 temposSolucaoAtual[i] = calculoCustoNovoLinha(solucao, matrizPreparacao, temposSolucao, i, j, k);
@@ -722,7 +723,7 @@ vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> ma
                     trocaParaFazer[1] = j;
                     trocaParaFazer[2] = k;
                 }
-
+                // cout << "2" << endl;
             }
         }
     }
@@ -730,7 +731,7 @@ vector<int> buscaMelhorCusto(vector<vector<int>> solucao, vector<vector<int>> ma
     return trocaParaFazer;
 }
 
-vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao)
+vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
     // cout << "1." << endl;
     vector<int> indicesTroca = buscaMelhorCusto(solucao, matrizPreparacao, temposSolucao);
@@ -748,7 +749,7 @@ vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> solucao, vector<ve
     return solucao;
 }
 
-vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
+vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
 {
     vector<int> custos = temposSolucao;
 
@@ -812,7 +813,7 @@ vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> solucao, vector<vect
     return custos;
 }
 
-vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<int> trocaParaFazer{0, 0, 0, 0}; // primeiro linha, linha subs, primeiro prod, prod subs
@@ -847,7 +848,7 @@ vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> solucao, vector<vect
     return trocaParaFazer;
 }
 
-vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     vector<int> indicesTroca = buscaMelhorCustoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao);
     int linha1 = indicesTroca[0];
@@ -859,7 +860,7 @@ vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> solucao, vector<v
     return solucao;
 }
 
-vector<int> calculoCustoNovoReInsertion(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
+vector<int> calculoCustoNovoReInsertion(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
 {
     vector<int> custos = temposSolucao;
 
@@ -916,7 +917,7 @@ vector<int> calculoCustoNovoReInsertion(vector<vector<int>> solucao, vector<vect
     return custos;
 }
 
-vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<int> trocaParaFazer{0, 0, 0, 0}; // primeiro linha, linha subs, primeiro prod, prod subs
@@ -950,7 +951,7 @@ vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> solucao, vector<vect
     return trocaParaFazer;
 }
 
-vector<vector<int>> novaSolucaoReInsertion(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> novaSolucaoReInsertion(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     vector<int> indicesTroca = buscaMelhorCustoReInsertion(solucao, matrizPreparacao, vetorProdutos, temposSolucao);
     int linha1 = indicesTroca[0];
@@ -982,7 +983,7 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
     int caso = 0;
     int contador = 0;
 
-    while (contador < 3)
+    while (contador < 5)
     {
         switch (caso)
         {
@@ -993,14 +994,14 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
             // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
             // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
@@ -1089,20 +1090,20 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
             // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
             // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         case 3:
             // Chama a função de movimento de inserção
             // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
             break;
         }
 

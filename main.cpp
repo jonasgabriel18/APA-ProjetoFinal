@@ -13,10 +13,10 @@ int main()
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-	// string localArquivo = "./instancias/n10m2_A.txt";
-	// string localArquivo = "./instancias/n52m5_A.txt";
+	string localArquivo = "./instancias/n52m5_B.txt";
+	// string localArquivo = "./instancias/n15m4_A.txt";
 	// string localArquivo = "./instancias/n450m16_A.txt";
-	string localArquivo = "./instancias/n500m10_A.txt";
+	// string localArquivo = "./instancias/n500m10_A.txt";
 
 	// Chamando a função para definir as informações do arquivo
 	tuple<int, int, vector<int>, vector<vector<int>>>
@@ -116,7 +116,7 @@ int main()
 	// Obter o tempo atual antes do início da execução
 	auto inicioGRASP2 = chrono::high_resolution_clock::now();
 
-	vector<vector<int>> solucaoGRASP2 = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 10);
+	vector<vector<int>> solucaoGRASP2 = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, numeroIteracoes);
 
 	// Obter o tempo atual após a execução
 	auto fimGRASP2 = chrono::high_resolution_clock::now();
@@ -178,6 +178,11 @@ int main()
 
 	cout << "H2: ......... " << *max_element(temposH2.begin(), temposH2.end()) << endl;
 
+	vector<vector<int>> solucaoH3 = novaSolucaoMesmaLinha(solucaoGulosa, matrizPreparacao, temposGuloso);
+	vector<int> temposH3 = temposProducao(solucaoH3, matrizPreparacao, vetorProdutos);
+
+	cout << "H3: ......... " << *max_element(temposH3.begin(), temposH3.end()) << endl;
+
 	vector<vector<int>> solucaoV1 = movimentoVertical(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
 	vector<int> temposV1 = temposProducao(solucaoV1, matrizPreparacao, vetorProdutos);
 
@@ -187,7 +192,12 @@ int main()
 	vector<int> temposV2 = temposProducao(solucaoV2, matrizPreparacao, vetorProdutos);
 
 	cout << "V2: ......... " << *max_element(temposV2.begin(), temposV2.end()) << endl;
-	
+
+	vector<vector<int>> solucaoV3 = novaSolucaoEntreLinhas(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
+	vector<int> temposV3 = temposProducao(solucaoV3, matrizPreparacao, vetorProdutos);
+
+	cout << "V3: ......... " << *max_element(temposV3.begin(), temposV3.end()) << endl;
+
 	vector<vector<int>> solucaoI1 = movimentoInsercao(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
 	vector<int> temposI1 = temposProducao(solucaoI1, matrizPreparacao, vetorProdutos);
 
@@ -197,6 +207,11 @@ int main()
 	vector<int> temposI2 = temposProducao(solucaoI2, matrizPreparacao, vetorProdutos);
 
 	cout << "I2: ......... " << *max_element(temposI2.begin(), temposI2.end()) << endl;
+
+	vector<vector<int>> solucaoI3 = novaSolucaoReInsertion(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
+	vector<int> temposI3 = temposProducao(solucaoI3, matrizPreparacao, vetorProdutos);
+
+	cout << "I3: ......... " << *max_element(temposI3.begin(), temposI3.end()) << endl;
 
 	cout << "\n=============== \n"
 		 << endl;
