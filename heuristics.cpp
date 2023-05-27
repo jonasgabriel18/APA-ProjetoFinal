@@ -39,7 +39,7 @@ int encontrarMenor(const vector<int> &vetorProduto, const vector<int> &indicesUt
 }
 
 // Esta função gera uma solução gulosa para o problema de programação de produção
-vector<vector<int>> gerarSolucaoGulosa(int n, int m, vector<int> vetorProdutos, vector<vector<int>> matrizPreparacao)
+vector<vector<int>> gerarSolucaoGulosa(int n, int m, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos)
 {
     // * Criação de vetores e matrizes para armazenar as informações do problema
 
@@ -108,7 +108,7 @@ vector<vector<int>> gerarSolucaoGulosa(int n, int m, vector<int> vetorProdutos, 
 // * Construção da Solução - Comentado
 
 // Esta função calcula os tempos de produção para cada linha de produção na solução
-vector<int> temposProducao(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos)
+vector<int> temposProducao(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos)
 {
     vector<int> temposLinhaAtual;
 
@@ -140,7 +140,7 @@ vector<int> temposProducao(vector<vector<int>> solucao, vector<vector<int>> matr
 
 // * Movimentos de Vizinhaças - Força Bruta
 
-vector<vector<int>> movimentoHorizontal(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> movimentoHorizontal(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
@@ -182,7 +182,7 @@ vector<vector<int>> movimentoHorizontal(vector<vector<int>> solucao, vector<vect
     return melhorSolucao;
 }
 
-vector<vector<int>> movimentoVertical(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> movimentoVertical(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     // Tempo atual da melhor solução
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
@@ -234,7 +234,7 @@ vector<vector<int>> movimentoVertical(vector<vector<int>> solucao, vector<vector
     return melhorSolucao;
 }
 
-vector<vector<int>> movimentoInverter(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
@@ -273,7 +273,7 @@ vector<vector<int>> movimentoInverter(vector<vector<int>> solucao, vector<vector
     return melhorSolucao;
 }
 
-vector<vector<int>> movimentoInsercao(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> movimentoInsercao(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
@@ -322,7 +322,7 @@ vector<vector<int>> movimentoInsercao(vector<vector<int>> solucao, vector<vector
 
 // * Movimentos de Vizinhanças - Otimizado V1
 
-vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> temposSolucao)
+vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
@@ -414,7 +414,7 @@ vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> solucao, vector
     return melhorSolucao;
 }
 
-vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     // Tempo atual da melhor solução
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
@@ -539,7 +539,7 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> solucao, vecto
     return melhorSolucao;
 }
 
-vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
@@ -1210,7 +1210,7 @@ vector<vector<int>> heuristicaGRASP(vector<int> &vetorProdutos, vector<vector<in
     return melhorSolucao;
 }
 
-vector<int> listaCandidatosRestritos(vector<int> vetorProdutos, vector<int> indicesProdutosUsados, float alfa)
+vector<int> listaCandidatosRestritos(vector<int> &vetorProdutos, vector<int> &indicesProdutosUsados, float alfa)
 {
     // alfa = 1 -> guloso
     // alfa = 0 -> aleatório
@@ -1268,7 +1268,7 @@ vector<int> listaCandidatosRestritos(vector<int> vetorProdutos, vector<int> indi
     return produtosAceitaveis;
 }
 
-vector<vector<int>> grasp(vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, int numeroLinhas, int numeroIteracoes)
+vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes)
 {
 
     int tempoAtual;
@@ -1495,7 +1495,7 @@ vector<vector<int>> heuristicaILS(vector<int> &vetorProdutos, vector<vector<int>
     return melhorSolucao;
 }
 
-vector<vector<int>> ils(vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, int numeroLinhas, int numeroIteracoes)
+vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes)
 {
     vector<vector<int>> melhorSolucao;
     int tempoAtual = 0;

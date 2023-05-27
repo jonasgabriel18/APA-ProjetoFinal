@@ -13,8 +13,8 @@ int main()
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-	// string localArquivo = "./instancias/n52m5_B.txt";
-	string localArquivo = "./instancias/n10m2_A.txt";
+	string localArquivo = "./instancias/n52m5_B.txt";
+	// string localArquivo = "./instancias/n10m2_A.txt";
 	// string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
@@ -43,7 +43,7 @@ int main()
 	// Obter o tempo atual antes do início da execução
 	auto inicioGuloso = chrono::high_resolution_clock::now();
 
-	vector<vector<int>> solucaoGulosa = gerarSolucaoGulosa(numeroProdutos, numeroLinhas, vetorProdutos, matrizPreparacao);
+	vector<vector<int>> solucaoGulosa = gerarSolucaoGulosa(numeroProdutos, numeroLinhas, matrizPreparacao, vetorProdutos);
 
 	// Obter o tempo atual após a execução
 	auto fimGuloso = chrono::high_resolution_clock::now();
@@ -95,7 +95,7 @@ int main()
 
 	// | Meta-heurística: GRASP
 
-	int numeroIteracoes = 150;
+	int numeroIteracoes = 15;
 
 	// Obter o tempo atual antes do início da execução
 	auto inicioGRASP1 = chrono::high_resolution_clock::now();
