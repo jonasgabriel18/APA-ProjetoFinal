@@ -635,6 +635,8 @@ vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> &solucao,
 
 // * Movimentos de Vizinhanças - Otimizado V2
 
+// | Horizontal
+
 int calculoCustoNovoLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao, int linha, int indexProdAtual, int indexProdSubs)
 {
 
@@ -649,52 +651,146 @@ int calculoCustoNovoLinha(vector<vector<int>> &solucao, vector<vector<int>> &mat
     int ant_prodSubs = solucao[linha][indexProdSubs - 1];
     int prox_prodSubs = solucao[linha][indexProdSubs + 1];
 
-    // Se o produtoAtual é o 1° da linha
+    // Se o produtoAtual for o 1° da linha
     if (indexProdAtual == 0)
     {
-        custo -= matrizPreparacao[produtoAtual][prox_prodAtual];
-        custo += matrizPreparacao[produtoSubs][prox_prodAtual];
-    }
 
-    // Se o produtoAtual é o último da linha
-    else if (indexProdAtual == solucao[linha].size() - 1)
-    {
-        custo -= matrizPreparacao[ant_prodAtual][produtoAtual];
-        custo += matrizPreparacao[ant_prodAtual][produtoSubs];
-    }
-
-    // Se o produtoAtual está entre o 1° e o último
-    else
-    {
-        custo -= matrizPreparacao[ant_prodAtual][produtoAtual];
+        // Conexão do produtoAtual com o próxmio retirada
         custo -= matrizPreparacao[produtoAtual][prox_prodAtual];
 
+        // Se o produto seguinte ao produtoAtual for o produtoSubs
+        if (indexProdSubs == indexProdAtual + 1 && indexProdSubs != solucao[linha].size() - 1)
+        {
+            // Conexão do produtoSubs com o próximo retirada
+            custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+            // Conexão do produtoAtual com o próximo do produtoSubs adicionada
+            custo += matrizPreparacao[produtoAtual][prox_prodSubs];
+
+            // Conexão do produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][produtoAtual];   
+        }
+
+        // Se o produtoSubs estiver entre 2° e o último
+        else if (indexProdSubs > indexProdAtual + 1 && indexProdSubs < solucao[linha].size() - 1)
+        {
+            // Conexão do produto anterior ao produtoSubs com o produtoSubs retirada
+            custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
+
+            // Conexão do produtoSubs com o próximo retirada
+            custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+            // Conexão do produto anterior ao produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[ant_prodSubs][produtoAtual];
+
+            // Conexão do produtoAtual com o próximo do produtoSubs adicionada
+            custo += matrizPreparacao[produtoAtual][prox_prodSubs];
+
+            // Conexão do produtoSubs com o antigo anterior do produtoSubs adicionada
+            custo += matrizPreparacao[produtoSubs][prox_prodAtual];
+        }
+
+        // Se o produtoSubs for o último da linha e não é o próximo do produtoAtual
+        else if (indexProdSubs != indexProdAtual + 1 && indexProdSubs == solucao[linha].size() - 1)
+        {
+            // Conexão do produtoSubs com o anterior retirada
+            custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
+
+            // Conexão do produtoAtual com o anterior ao produtoSubs adicionada
+            custo += matrizPreparacao[ant_prodSubs][produtoAtual];
+
+            // Conexão do produtoSubs com o próximo do produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][prox_prodAtual];
+        }
+
+        // Se o produtoSubs for o último da linha e é o próximo do produtoAtual
+        else if (indexProdSubs == indexProdAtual + 1 && indexProdSubs == solucao[linha].size() - 1)
+        {
+            // Conexão do produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][produtoAtual];
+        }
+
+    }
+
+    // Se o produtoAtual for o penúltimo da linha
+    else if (indexProdAtual == solucao[linha].size() - 2)
+    {
+        // Conexão do produto anterior ao produtoAtual com o produtoAtual retirada
+        custo -= matrizPreparacao[ant_prodAtual][produtoAtual];
+
+        // Conexão do produtoAtual com o produtoSubs retirada
+        custo -= matrizPreparacao[produtoAtual][produtoSubs];
+
+        // Conexão do produto anterior ao produtoAtual com o produtoSubs adicionada
         custo += matrizPreparacao[ant_prodAtual][produtoSubs];
-        custo += matrizPreparacao[produtoSubs][prox_prodAtual];
+
+        // Conexão do produtoSubs com o produtoAtual adicionada
+        custo += matrizPreparacao[produtoSubs][produtoAtual];
     }
 
-    // Se o produtoSubs é o 1° produto após o produtoAtual
-    if (indexProdSubs == indexProdAtual + 1 && indexProdSubs != solucao[linha].size() - 1)
+    // Se o produtoAtual estiver entre o 1° e o penúltimo da linha
+    else if (indexProdAtual > 0 && indexProdAtual < solucao[linha].size() - 2)
     {
-        custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
-        custo += matrizPreparacao[produtoAtual][prox_prodSubs];
-    }
 
-    // Se o produtoSubs é o último da linha
-    else if (indexProdSubs == solucao[linha].size() - 1)
-    {
-        custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
-        custo += matrizPreparacao[ant_prodSubs][produtoAtual];
-    }
+        // Conexão do produto anterior ao produtoAtual com o produtoAtual retirada
+        custo -= matrizPreparacao[ant_prodAtual][produtoAtual];
 
-    // Se o produtoSubs está entre o produtoAtual e o último
-    else
-    {
-        custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
-        custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
+        // Conexão do produtoAtual com o próximo retirada
+        custo -= matrizPreparacao[produtoAtual][prox_prodAtual];
 
-        custo += matrizPreparacao[ant_prodSubs][produtoAtual];
-        custo += matrizPreparacao[produtoAtual][prox_prodSubs];
+        // Se o produtoSubs for o próximo do produtoAtual
+        if (indexProdSubs == indexProdAtual + 1 && indexProdSubs != solucao[linha].size() - 1)
+        {
+            // Conexão do produtoSubs com o próximo retirada
+            custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+            // Conexão do produto anterior ao produtoAtual com o produtoSubs adicionada
+            custo += matrizPreparacao[ant_prodAtual][produtoSubs];
+
+            // Conexão do produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][produtoAtual];
+
+            // Conexão do produtoAtual com o próximo do produtoSubs
+            custo += matrizPreparacao[produtoAtual][prox_prodSubs];
+        }
+
+        // Se o produtoSubs estiver entre o 1° após o produtoAtual e o último da linha
+        else if (indexProdSubs > indexProdAtual + 1 && indexProdSubs != solucao[linha].size() - 1)
+        {
+            // Conexão do produto anterior ao produtoSubs com o produtoSubs retirada
+            custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
+
+            // Conexão do produtoSubs com o próximo retirada
+            custo -= matrizPreparacao[produtoSubs][prox_prodSubs];
+
+            // Conexão do produto anterior ao produtoAtual com o produtoSubs adicionada
+            custo += matrizPreparacao[ant_prodAtual][produtoSubs];
+
+            // Conexão do produtoSubs com o produto seguinte ao produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][prox_prodAtual];
+
+            // Conexão do produto anterior ao produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[ant_prodSubs][produtoAtual];
+
+            // Conexão do produtoAtual com o produto seguinte do produtoSubs adicionada
+            custo += matrizPreparacao[produtoAtual][prox_prodSubs];
+        }
+
+        // Se o produtoSubs for, pelo menos, o 2° depois do produtoAtual e é o último da linha
+        else if (indexProdSubs > indexProdAtual + 1 && indexProdSubs == solucao[linha].size() - 1)
+        {
+            // Conexão do produto anterior ao produtoSubs com o produtoSubs retirada
+            custo -= matrizPreparacao[ant_prodSubs][produtoSubs];
+
+            // Conexão do produto anterior ao produtoAtual com o produtoSubs adicionada
+            custo += matrizPreparacao[ant_prodAtual][produtoSubs];
+
+            // Conexão do produtoSubs com o produto seguinte ao produtoAtual adicionada
+            custo += matrizPreparacao[produtoSubs][prox_prodAtual];
+
+            // Conexão do produto anterior ao produtoSubs com o produtoAtual adicionada
+            custo += matrizPreparacao[ant_prodSubs][produtoAtual];
+        }
     }
 
     return custo;
@@ -703,11 +799,11 @@ int calculoCustoNovoLinha(vector<vector<int>> &solucao, vector<vector<int>> &mat
 vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
-    vector<int> trocaParaFazer{0, 0, 0}; // linha que vai ser modificada, index do primeiro prod, index do prod subs
+    vector<int> trocaParaFazer(3, 0); // linha que vai ser modificada, index do primeiro prod, index do prod subs
 
     for (int i = 0; i < solucao.size(); i++)
     {
-        for (int j = 0; j < solucao[i].size(); j++)
+        for (int j = 0; j < solucao[i].size() - 1; j++)
         {
             for (int k = j + 1; k < solucao[i].size(); k++)
             {
@@ -720,6 +816,7 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
                 if (custoAtual < melhorCusto)
                 {
                     melhorCusto = custoAtual;
+
                     trocaParaFazer[0] = i;
                     trocaParaFazer[1] = j;
                     trocaParaFazer[2] = k;
@@ -742,6 +839,8 @@ vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> &solucao, vector<v
 
     return solucao;
 }
+
+// | Vertical
 
 vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
 {
@@ -854,6 +953,8 @@ vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> &solucao, vector<
     return solucao;
 }
 
+// | Inserir
+
 vector<int> calculoCustoNovoReInsertion(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao, int linhaAtual, int linhaSubs, int indexProdAtual, int indexProdSubs)
 {
     vector<int> custos = temposSolucao;
@@ -953,17 +1054,21 @@ vector<vector<int>> novaSolucaoReInsertion(vector<vector<int>> &solucao, vector<
     int indicePrimeiroProd = indicesTroca[2];
     int indiceSubsProd = indicesTroca[3];
 
-    int prod = solucao[linha1][indicePrimeiroProd];
-    solucao[linha1].erase(solucao[linha1].begin() + indicePrimeiroProd);
-    solucao[linha2].insert(solucao[linha2].begin() + indiceSubsProd, prod);
+    if (linha1 != 0 && linha2 != 0)
+    {
+        int prod = solucao[linha1][indicePrimeiroProd];
+        solucao[linha1].erase(solucao[linha1].begin() + indicePrimeiroProd);
+        solucao[linha2].insert(solucao[linha2].begin() + indiceSubsProd, prod);
+    }
 
     return solucao;
 }
 
 // * VND - Comentado
 
-vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
+
     // Inicialização do tempo atual com o maior tempo da solução atual
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
 
@@ -973,43 +1078,46 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
     vector<vector<int>> possivelMelhorSolucao;
     vector<vector<int>> solucaoAtual = solucao;
 
+    vector<int> temposAtuais = temposSolucao;
+    vector<int> temposAnteriores = temposAtuais;
+
     // Controle de casos e contador de iterações
     int caso = 0;
     int contador = 0;
 
-    while (contador < 5)
+    while (contador < 10)
     {
         switch (caso)
         {
         case 0:
             // Chama a função de movimento de inverter
-            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
-            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 3:
             // Chama a função de movimento de inserção
-            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         }
 
         // Avalia os tempos de produção da nova solução
-        temposSolucao = temposProducao(possivelMelhorSolucao, matrizPreparacao, vetorProdutos);
+        temposAtuais = temposProducao(possivelMelhorSolucao, matrizPreparacao, vetorProdutos);
 
         // Encontra o maior tempo de produção possível na nova solução
-        int possivelMaiorTempo = *max_element(temposSolucao.begin(), temposSolucao.end());
+        int possivelMaiorTempo = *max_element(temposAtuais.begin(), temposAtuais.end());
 
         if (possivelMaiorTempo < tempoAtual)
         {
@@ -1021,18 +1129,21 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
             solucaoAtual = possivelMelhorSolucao;
             // Reinicia o caso para o movimento horizontal (ou trocarProdutosMesmaLinha)
             caso = 0;
+            temposAnteriores = temposAtuais;
         }
         else
         {
+            temposAtuais = temposAnteriores;
+
             if (caso != 3)
             {
                 // Passa para a próxima vizinhança
-                caso++;
+                caso += 1;
             }
             else
             {
                 caso = 0;
-                contador++;
+                contador += 1;
             }
         }
     }
@@ -1043,21 +1154,25 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> solucao, vector<vector<in
 
 // * RVND - Comentado
 
-vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vector<int>> matrizPreparacao, vector<int> vetorProdutos, vector<int> temposSolucao)
+vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
+
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    int tempoAnterior = tempoAtual;
+
     vector<vector<int>> melhorSolucao = solucao;
     vector<vector<int>> possivelMelhorSolucao;
     vector<vector<int>> solucaoAtual = solucao;
 
+    vector<int> temposAtuais = temposSolucao;
+    vector<int> temposAnteriores = temposAtuais;
+
     // Crie um vetor de frequência para controlar as buscas locais utilizadas
-    vector<bool> buscaLocalUtilizada(4, false);
+    vector<int> buscaLocalUtilizada(4, 0);
 
     // Controle de casos e contador de iterações
     int contador = 0;
 
-    while (contador < 3)
+    while (contador < 100)
     {
 
         // Crie uma lista das buscas locais não utilizadas
@@ -1068,10 +1183,6 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
                 buscasLocaisNaoUtilizadas.push_back(i);
         }
 
-        // Verifique se todas as buscas locais foram utilizadas
-        if (buscasLocaisNaoUtilizadas.empty())
-            break;
-
         // Escolha aleatoriamente uma busca local não utilizada
         int buscaLocal = buscasLocaisNaoUtilizadas[rand() % buscasLocaisNaoUtilizadas.size()];
 
@@ -1079,25 +1190,25 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
         {
         case 0:
             // Chama a função de movimento de inverter
-            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 1:
             // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
-            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposSolucao);
+            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
             break;
         case 2:
             // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 3:
             // Chama a função de movimento de inserção
-            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
-            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposSolucao);
+            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         }
 
@@ -1107,15 +1218,8 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
         // Encontra o maior tempo de produção possível na nova solução
         int possivelMaiorTempo = *max_element(temposSolucao.begin(), temposSolucao.end());
 
-        // Se a busca local utilizada não foi efetiva
-        if (possivelMaiorTempo >= tempoAtual)
-        {
-            // Atualize a frequência da busca local utilizada
-            buscaLocalUtilizada[buscaLocal] = true;
-        }
-
         // Se a busca local utilizada foi efetiva
-        else
+        if (possivelMaiorTempo < tempoAtual)
         {
             // Atualiza o tempo atual com o novo maior tempo de produção
             tempoAtual = possivelMaiorTempo;
@@ -1127,17 +1231,37 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> solucao, vector<vecto
             // Setando os valores das buscas locais para false
             for (int i = 0; i < buscaLocalUtilizada.size(); i++)
             {
-                buscaLocalUtilizada[i] = false;
+                buscaLocalUtilizada[i] = 0;
             }
+
+            temposAnteriores = temposAtuais;
         }
 
-        // Se não foi utilizada nenhuma busca local
-        if (tempoAnterior == tempoAtual)
+        // Se a busca local utilizada não foi efetiva
+        else
         {
+            // Atualize a frequência da busca local utilizada
+            buscaLocalUtilizada[buscaLocal] = 1;
+
+            temposAtuais = temposAnteriores;
+
+            int quantidadeMovimentos = 0;
+            for (int i = 0; i < buscaLocalUtilizada.size(); i++)
+            {
+                if (buscaLocalUtilizada[i] == 1)
+                    quantidadeMovimentos += 1;
+            }
+
+            if (quantidadeMovimentos == 4)
+            {
+                for (int i = 0; i < buscaLocalUtilizada.size(); i++)
+                {
+                    buscaLocalUtilizada[i] = 0;
+                }
+            }
+
             contador += 1;
         }
-
-        tempoAnterior = tempoAtual;
     }
 
     return melhorSolucao;
@@ -1248,7 +1372,7 @@ vector<int> listaCandidatosRestritos(vector<int> &vetorProdutos, vector<int> &in
     float valorAceitavel;
     if (alfa == 0)
     {
-        valorAceitavel = vetorProdutos[valorMinimo];
+        valorAceitavel = *max_element(vetorProdutos.begin(), vetorProdutos.end());
     }
     else
     {
@@ -1511,10 +1635,10 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
 
         // Padrão: VND
 
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        // vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         // Alternativo: RVND
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
 

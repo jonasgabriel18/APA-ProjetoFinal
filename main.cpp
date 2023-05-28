@@ -13,8 +13,11 @@ int main()
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
-	string localArquivo = "./instancias/n52m5_B.txt";
-	// string localArquivo = "./instancias/n10m2_A.txt";
+	// string localArquivo = "./instancias/n10m2_B.txt";
+	// string localArquivo = "./instancias/n15m4_B.txt";
+	// string localArquivo = "./instancias/n29m6_B.txt";
+	string localArquivo = "./instancias/n40m5_A.txt";
+	// string localArquivo = "./instancias/n52m5_B.txt";
 	// string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
@@ -95,23 +98,23 @@ int main()
 
 	// | Meta-heurística: GRASP
 
-	int numeroIteracoes = 15;
+	int numeroIteracoes = 250;
 
-	// Obter o tempo atual antes do início da execução
-	auto inicioGRASP1 = chrono::high_resolution_clock::now();
+	// // Obter o tempo atual antes do início da execução
+	// auto inicioGRASP1 = chrono::high_resolution_clock::now();
 
-	vector<vector<int>> solucaoGRASP1 = heuristicaGRASP(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos, numeroIteracoes);
+	// vector<vector<int>> solucaoGRASP1 = heuristicaGRASP(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos, numeroIteracoes);
 
-	// Obter o tempo atual após a execução
-	auto fimGRASP1 = chrono::high_resolution_clock::now();
+	// // Obter o tempo atual após a execução
+	// auto fimGRASP1 = chrono::high_resolution_clock::now();
 
-	// Calcular a duração em segundos
-	duracao = fimGRASP1 - inicioGRASP1;
-	tempo = duracao.count();
+	// // Calcular a duração em segundos
+	// duracao = fimGRASP1 - inicioGRASP1;
+	// tempo = duracao.count();
 
-	vector<int> temposGRASP1 = temposProducao(solucaoGRASP1, matrizPreparacao, vetorProdutos);
-	cout << "GRASP1: ....... " << *max_element(temposGRASP1.begin(), temposGRASP1.end());
-	cout << " (" << tempo << "s)" << endl;
+	// vector<int> temposGRASP1 = temposProducao(solucaoGRASP1, matrizPreparacao, vetorProdutos);
+	// cout << "GRASP1: ....... " << *max_element(temposGRASP1.begin(), temposGRASP1.end());
+	// cout << " (" << tempo << "s)" << endl;
 
 	// Obter o tempo atual antes do início da execução
 	auto inicioGRASP2 = chrono::high_resolution_clock::now();
@@ -131,21 +134,21 @@ int main()
 
 	// | Meta-heurística: ILS
 
-	// Obter o tempo atual antes do início da execução
-	auto inicioILS1 = chrono::high_resolution_clock::now();
+	// // Obter o tempo atual antes do início da execução
+	// auto inicioILS1 = chrono::high_resolution_clock::now();
 
-	vector<vector<int>> solucaoILS1 = heuristicaILS(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos, numeroIteracoes);
+	// vector<vector<int>> solucaoILS1 = heuristicaILS(vetorProdutos, matrizPreparacao, numeroLinhas, numeroProdutos, numeroIteracoes);
 
-	// Obter o tempo atual após a execução
-	auto fimILS1 = chrono::high_resolution_clock::now();
+	// // Obter o tempo atual após a execução
+	// auto fimILS1 = chrono::high_resolution_clock::now();
 
-	// Calcular a duração em segundos
-	duracao = fimILS1 - inicioILS1;
-	tempo = duracao.count();
+	// // Calcular a duração em segundos
+	// duracao = fimILS1 - inicioILS1;
+	// tempo = duracao.count();
 
-	vector<int> temposILS1 = temposProducao(solucaoILS1, matrizPreparacao, vetorProdutos);
-	cout << "ILS1: ......... " << *max_element(temposILS1.begin(), temposILS1.end());
-	cout << " (" << tempo << "s)" << endl;
+	// vector<int> temposILS1 = temposProducao(solucaoILS1, matrizPreparacao, vetorProdutos);
+	// cout << "ILS1: ......... " << *max_element(temposILS1.begin(), temposILS1.end());
+	// cout << " (" << tempo << "s)" << endl;
 
 	// Obter o tempo atual antes do início da execução
 	auto inicioILS2 = chrono::high_resolution_clock::now();

@@ -20,8 +20,8 @@ std::vector<std::vector<int>> movimentoVertical(std::vector<std::vector<int>> &s
 std::vector<std::vector<int>> movimentoInverter(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 std::vector<std::vector<int>> movimentoInsercao(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 
-std::vector<std::vector<int>> melhorarLinhas(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
-std::vector<std::vector<int>> melhorarLinhasRVND(std::vector<std::vector<int>> solucao, std::vector<std::vector<int>> matrizPreparacao, std::vector<int> vetorProdutos, std::vector<int> temposSolucao);
+std::vector<std::vector<int>> melhorarLinhas(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
+std::vector<std::vector<int>> melhorarLinhasRVND(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 
 std::vector<std::vector<int>> heuristicaGRASP(std::vector<int> &vetorProdutos, std::vector<std::vector<int>> &matrizPreparacao, int numeroLinhas, int produtos, int numeroIteracoes);
 
