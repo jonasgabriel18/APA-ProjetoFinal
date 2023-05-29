@@ -236,38 +236,30 @@ vector<vector<int>> movimentoVertical(vector<vector<int>> &solucao, vector<vecto
 
 vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
+    int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
     vector<vector<int>> melhorSolucao = solucao;
     vector<vector<int>> solucaoCopia = solucao;
 
-    for (int i = 0; i < solucao.size(); i++)
+    auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
+    int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
+
+    // Invertendo a ordem dos produtos na linha atual
+    for (int j = 0; j < solucaoCopia[linhaMaiorCusto].size() / 2; j++)
     {
-        // Invertendo a ordem dos produtos na linha atual
-        for (int j = 0; j < solucaoCopia[i].size() / 2; j++)
-        {
-            int temp = solucaoCopia[i][j];
-            solucaoCopia[i][j] = solucaoCopia[i][solucaoCopia[i].size() - 1 - j];
-            solucaoCopia[i][solucaoCopia[i].size() - 1 - j] = temp;
-        }
+        int temp = solucaoCopia[linhaMaiorCusto][j];
+        solucaoCopia[linhaMaiorCusto][j] = solucaoCopia[linhaMaiorCusto][solucaoCopia[linhaMaiorCusto].size() - 1 - j];
+        solucaoCopia[linhaMaiorCusto][solucaoCopia[linhaMaiorCusto].size() - 1 - j] = temp;
+    }
 
-        // Avalia a nova configuração das linhas de produção
-        vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
-        int possivelMaiorTempo = *max_element(temposPossiveis.begin(), temposPossiveis.end());
+    // Avalia a nova configuração das linhas de produção
+    vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
+    int possivelMaiorTempo = *max_element(temposPossiveis.begin(), temposPossiveis.end());
 
-        // Atualiza a melhor configuração das linhas de produção
-        if (possivelMaiorTempo < tempoAtual)
-        {
-            tempoAtual = possivelMaiorTempo;
-            melhorSolucao = solucaoCopia;
-        }
-
-        // Desfazendo o movimento
-        for (int j = 0; j < solucaoCopia[i].size() / 2; j++)
-        {
-            int temp = solucaoCopia[i][j];
-            solucaoCopia[i][j] = solucaoCopia[i][solucaoCopia[i].size() - 1 - j];
-            solucaoCopia[i][solucaoCopia[i].size() - 1 - j] = temp;
-        }
+    // Atualiza a melhor configuração das linhas de produção
+    if (possivelMaiorTempo < melhorCusto)
+    {
+        melhorCusto = possivelMaiorTempo;
+        melhorSolucao = solucaoCopia;
     }
 
     return melhorSolucao;
@@ -276,6 +268,7 @@ vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vecto
 vector<vector<int>> movimentoInsercao(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
+
     vector<vector<int>> melhorSolucao = solucao;
 
     for (int i = 0; i < solucao.size(); i++)
@@ -794,15 +787,8 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
 
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
 
-    int linhaMaiorCusto;
-    for (int i = 0; i < temposSolucao.size(); i++)
-    {
-        if (temposSolucao[i] == melhorCusto)
-        {
-            linhaMaiorCusto = i;
-            break;
-        }
-    }
+    auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
+    int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
 
     vector<int> trocaParaFazer(3, 0); // linha que vai ser modificada, index do primeiro prod, index do prod subs
 
