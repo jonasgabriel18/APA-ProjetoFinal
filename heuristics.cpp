@@ -1147,11 +1147,10 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
     vector<int> temposAtuais = temposSolucao;
     vector<int> temposAnteriores = temposAtuais;
 
-    // Controle de casos e contador de iterações
+    // Controle de casos e
     int caso = 0;
-    int contador = 0;
 
-    while (contador < 10)
+    while (1)
     {
         switch (caso)
         {
@@ -1208,8 +1207,7 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
             }
             else
             {
-                caso = 0;
-                contador += 1;
+                break;
             }
         }
     }
@@ -1235,10 +1233,11 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
     // Crie um vetor de frequência para controlar as buscas locais utilizadas
     vector<int> buscaLocalUtilizada(4, 0);
 
-    // Controle de casos e contador de iterações
-    int contador = 0;
+    // Inicializa o gerador de números aleatórios
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
 
-    while (contador < 100)
+    while (1)
     {
 
         // Crie uma lista das buscas locais não utilizadas
@@ -1249,8 +1248,9 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
                 buscasLocaisNaoUtilizadas.push_back(i);
         }
 
-        // Escolha aleatoriamente uma busca local não utilizada
-        int buscaLocal = buscasLocaisNaoUtilizadas[rand() % buscasLocaisNaoUtilizadas.size()];
+        // Gera um número aleatório para determinar qual a busca local que será utilizada
+        std::uniform_int_distribution<int> dist(0, buscasLocaisNaoUtilizadas.size() - 1);
+        int buscaLocal = buscasLocaisNaoUtilizadas[dist(gen)];
 
         switch (buscaLocal)
         {
@@ -1282,7 +1282,7 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
         temposAtuais = temposProducao(possivelMelhorSolucao, matrizPreparacao, vetorProdutos);
 
         // Encontra o maior tempo de produção possível na nova solução
-        int possivelMaiorTempo = *max_element(temposSolucao.begin(), temposSolucao.end());
+        int possivelMaiorTempo = *max_element(temposAtuais.begin(), temposAtuais.end());
 
         // Se a busca local utilizada foi efetiva
         if (possivelMaiorTempo < tempoAtual)
@@ -1320,13 +1320,9 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
 
             if (quantidadeMovimentos == 4)
             {
-                for (int i = 0; i < buscaLocalUtilizada.size(); i++)
-                {
-                    buscaLocalUtilizada[i] = 0;
-                }
+                break;
             }
 
-            contador += 1;
         }
     }
 
@@ -1458,7 +1454,7 @@ vector<int> listaCandidatosRestritos(vector<int> &vetorProdutos, vector<int> &in
     return produtosAceitaveis;
 }
 
-vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes)
+vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes, float alfa)
 {
 
     int tempoAtual;
@@ -1493,9 +1489,6 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
         // Adicionando o indiceProdutoEscolhido em indicesProdutosUsados
         indicesProdutosUsados.push_back(produtoEscolhido);
 
-        // Fazendo a distribuição uniforme do valor do alfa
-        std::uniform_real_distribution<double> distAlfa(0, 1);
-
         // Adicionando produto de indiceProdutoEscolhido na solução
         solucaoInicial[linha].push_back(produtoEscolhido);
 
@@ -1505,7 +1498,8 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
         {
 
             // Encontrando os candidatos válidos para inserir na solução
-            vector<int> candidatosValidos = listaCandidatosRestritos(vetorProdutos, indicesProdutosUsados, distAlfa(gen));
+            // vector<int> candidatosValidos = listaCandidatosRestritos(vetorProdutos, indicesProdutosUsados, distAlfa(gen));
+            vector<int> candidatosValidos = listaCandidatosRestritos(vetorProdutos, indicesProdutosUsados, alfa);
 
             // Gera um número aleatório para determinar o produto que será usado para criar a lista de candidatos restritos
             std::uniform_int_distribution<int> distProdutoValido(0, candidatosValidos.size() - 1);
@@ -1534,7 +1528,8 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
         int tempoInicial = *max_element(novosTempos.begin(), novosTempos.end());
 
         // Tentando melhorar a solução
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        // vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         // Tempos para a solução possivelmente melhorada
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
@@ -1692,8 +1687,8 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
 
     for (int r = 0; r < numeroIteracoes; r++)
     {
-        vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 10);
-        unordered_set<int> produtosUsados;
+        vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 0.3);
+        // vector<vector<int>> solucaoInicial = gerarSolucaoGulosa(vetorProdutos.size(), numeroLinhas, matrizPreparacao, vetorProdutos);
 
         solucaoInicial = perturbacao(solucaoInicial, numeroLinhas);
 
@@ -1701,10 +1696,10 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
 
         // Padrão: VND
 
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        // vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         // Alternativo: RVND
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
 

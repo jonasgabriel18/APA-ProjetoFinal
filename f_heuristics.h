@@ -33,7 +33,7 @@ std::vector<std::vector<int>> trocarProdutosEntreLinhas(std::vector<std::vector<
 std::vector<std::vector<int>> inserirProdutoEmOutrasPosicoes(std::vector<std::vector<int>> &solucao, std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, std::vector<int> &temposSolucao);
 
 std::vector<int> listaCandidatosRestritos(std::vector<int> &vetorProdutos, std::vector<int> &sindicesProdutosUsados, float alfa);
-std::vector<std::vector<int>> grasp(std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes);
+std::vector<std::vector<int>> grasp(std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes, float alfa);
 
 std::vector<std::vector<int>> ils(std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes);
 

@@ -9,16 +9,18 @@ int main()
 	double tempo;
 	chrono::duration<double> duracao;
 
+	int numeroIteracoes = 1000;
+
 	// # Manipulação do Arquivo
 
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
 	// string localArquivo = "./instancias/n10m2_B.txt";
-	string localArquivo = "./instancias/n15m3_A.txt";
-	// string localArquivo = "./instancias/n29m4_A.txt";
-	// string localArquivo = "./instancias/n40m5_A.txt";
+	// string localArquivo = "./instancias/n15m3_A.txt";
+	// string localArquivo = "./instancias/n29m4_B.txt";
+	// string localArquivo = "./instancias/n40m5_B.txt";
 	// string localArquivo = "./instancias/n52m5_B.txt";
-	// string localArquivo = "./instancias/n450m16_A.txt";
+	string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
 	// Chamando a função para definir as informações do arquivo
@@ -97,8 +99,6 @@ int main()
 
 	// | Meta-heurística: GRASP
 
-	int numeroIteracoes = 250;
-
 	// // Obter o tempo atual antes do início da execução
 	// auto inicioGRASP1 = chrono::high_resolution_clock::now();
 
@@ -118,7 +118,7 @@ int main()
 	// Obter o tempo atual antes do início da execução
 	auto inicioGRASP2 = chrono::high_resolution_clock::now();
 
-	vector<vector<int>> solucaoGRASP2 = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, numeroIteracoes);
+	vector<vector<int>> solucaoGRASP2 = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, numeroIteracoes, 0.87);
 
 	// Obter o tempo atual após a execução
 	auto fimGRASP2 = chrono::high_resolution_clock::now();
@@ -215,8 +215,9 @@ int main()
 
 	cout << "I3: ......... " << *max_element(temposI3.begin(), temposI3.end()) << endl;
 
-	cout << "\n=============== \n"
-		 << endl;
+	cout
+		<< "\n=============== \n"
+		<< endl;
 
 	return 0;
 }
