@@ -524,7 +524,6 @@ vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> &solucao, vect
                     // Desfaz a troca para a próxima iteração do loop
                     solucaoCopia[i][j] = produtoAtual;
                     solucaoCopia[k][l] = produtoSubs;
-
                 }
             }
         }
@@ -792,29 +791,38 @@ int calculoCustoNovoLinha(vector<vector<int>> &solucao, vector<vector<int>> &mat
 
 vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
+
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
+
+    int linhaMaiorCusto;
+    for (int i = 0; i < temposSolucao.size(); i++)
+    {
+        if (temposSolucao[i] == melhorCusto)
+        {
+            linhaMaiorCusto = i;
+            break;
+        }
+    }
+
     vector<int> trocaParaFazer(3, 0); // linha que vai ser modificada, index do primeiro prod, index do prod subs
 
-    for (int i = 0; i < solucao.size(); i++)
+    for (int j = 0; j < solucao[linhaMaiorCusto].size() - 1; j++)
     {
-        for (int j = 0; j < solucao[i].size() - 1; j++)
+        for (int k = j + 1; k < solucao[linhaMaiorCusto].size(); k++)
         {
-            for (int k = j + 1; k < solucao[i].size(); k++)
+            vector<int> temposSolucaoAtual = temposSolucao;
+
+            temposSolucaoAtual[linhaMaiorCusto] = calculoCustoNovoLinha(solucao, matrizPreparacao, temposSolucao, linhaMaiorCusto, j, k);
+
+            int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
+
+            if (custoAtual < melhorCusto)
             {
-                vector<int> temposSolucaoAtual = temposSolucao;
+                melhorCusto = custoAtual;
 
-                temposSolucaoAtual[i] = calculoCustoNovoLinha(solucao, matrizPreparacao, temposSolucao, i, j, k);
-
-                int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                if (custoAtual < melhorCusto)
-                {
-                    melhorCusto = custoAtual;
-
-                    trocaParaFazer[0] = i;
-                    trocaParaFazer[1] = j;
-                    trocaParaFazer[2] = k;
-                }
+                trocaParaFazer[0] = linhaMaiorCusto;
+                trocaParaFazer[1] = j;
+                trocaParaFazer[2] = k;
             }
         }
     }
@@ -935,29 +943,35 @@ vector<int> calculoCustoNovoEntreLinhas(vector<vector<int>> &solucao, vector<vec
 vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
+
+    auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
+    int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
+
     vector<int> trocaParaFazer{0, 0, 0, 0}; // primeiro linha, linha subs, primeiro prod, prod subs
 
-    for (int i = 0; i < solucao.size(); i++)
+    for (int j = 0; j < solucao[linhaMaiorCusto].size(); j++)
     {
-        for (int j = 0; j < solucao[i].size(); j++)
+        for (int k = 0; k < solucao.size(); k++)
         {
-            for (int k = i + 1; k < solucao.size(); k++)
+            if (k == linhaMaiorCusto)
             {
-                for (int l = 0; l < solucao[k].size(); l++)
+                continue;
+            }
+
+            for (int l = 0; l < solucao[k].size(); l++)
+            {
+                vector<int> temposSolucaoAtual = temposSolucao;
+                temposSolucaoAtual = calculoCustoNovoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao, linhaMaiorCusto, k, j, l);
+
+                int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
+
+                if (custoAtual < melhorCusto)
                 {
-                    vector<int> temposSolucaoAtual = temposSolucao;
-                    temposSolucaoAtual = calculoCustoNovoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao, i, k, j, l);
-
-                    int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                    if (custoAtual < melhorCusto)
-                    {
-                        melhorCusto = custoAtual;
-                        trocaParaFazer[0] = i;
-                        trocaParaFazer[1] = k;
-                        trocaParaFazer[2] = j;
-                        trocaParaFazer[3] = l;
-                    }
+                    melhorCusto = custoAtual;
+                    trocaParaFazer[0] = linhaMaiorCusto;
+                    trocaParaFazer[1] = k;
+                    trocaParaFazer[2] = j;
+                    trocaParaFazer[3] = l;
                 }
             }
         }
@@ -1078,29 +1092,30 @@ vector<int> calculoCustoNovoReInsertion(vector<vector<int>> &solucao, vector<vec
 vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
+
+    auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
+    int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
+
     vector<int> trocaParaFazer{0, 0, 0, 0}; // primeiro linha, linha subs, primeiro prod, prod subs
 
-    for (int i = 0; i < solucao.size() - 1; i++)
+    for (int j = 0; j < solucao[linhaMaiorCusto].size(); j++)
     {
-        for (int j = 0; j < solucao[i].size(); j++)
+        for (int k = linhaMaiorCusto + 1; k < solucao.size(); k++)
         {
-            for (int k = i + 1; k < solucao.size(); k++)
+            for (int l = 0; l < solucao[k].size() + 1; l++)
             {
-                for (int l = 0; l < solucao[k].size() + 1; l++)
+                vector<int> temposSolucaoAtual = temposSolucao;
+                temposSolucaoAtual = calculoCustoNovoReInsertion(solucao, matrizPreparacao, vetorProdutos, temposSolucao, linhaMaiorCusto, k, j, l);
+
+                int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
+
+                if (custoAtual < melhorCusto)
                 {
-                    vector<int> temposSolucaoAtual = temposSolucao;
-                    temposSolucaoAtual = calculoCustoNovoReInsertion(solucao, matrizPreparacao, vetorProdutos, temposSolucao, i, k, j, l);
-
-                    int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                    if (custoAtual < melhorCusto)
-                    {
-                        melhorCusto = custoAtual;
-                        trocaParaFazer[0] = i;
-                        trocaParaFazer[1] = k;
-                        trocaParaFazer[2] = j;
-                        trocaParaFazer[3] = l;
-                    }
+                    melhorCusto = custoAtual;
+                    trocaParaFazer[0] = linhaMaiorCusto;
+                    trocaParaFazer[1] = k;
+                    trocaParaFazer[2] = j;
+                    trocaParaFazer[3] = l;
                 }
             }
         }
