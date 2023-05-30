@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 		 << endl;
 
 	// * Testes de qualidade
-
+	/**
 	vector<vector<int>> solucaoH1 = movimentoHorizontal(solucaoGulosa, matrizPreparacao, vetorProdutos, temposGuloso);
 	vector<int> temposH1 = temposProducao(solucaoH1, matrizPreparacao, vetorProdutos);
 
@@ -221,6 +221,6 @@ int main(int argc, char *argv[])
 	cout
 		<< "\n=============== \n"
 		<< endl;
-
+*/
 	return 0;
 }
