@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
 
 	double tempo;
@@ -12,14 +12,17 @@ int main()
 	int numeroIteracoes = 1000;
 
 	// # Manipulação do Arquivo
-
+	string instancia = argv[1];
+	string localArquivo = "./instancias/" + instancia;
+	cout << localArquivo << endl;
+	
 	// Definindo o endereço do arquivo
 	// string localArquivo = "S:/Programming/C++/APA/arquivo.txt";
 	// string localArquivo = "./instancias/n10m2_B.txt";
 	// string localArquivo = "./instancias/n15m3_A.txt";
 	// string localArquivo = "./instancias/n29m4_B.txt";
 	// string localArquivo = "./instancias/n40m5_B.txt";
-	string localArquivo = "./instancias/n52m5_B.txt";
+	//string localArquivo = "./instancias/n52m5_B.txt";
 	// string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
