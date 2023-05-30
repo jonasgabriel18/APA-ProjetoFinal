@@ -1322,7 +1322,6 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
             {
                 break;
             }
-
         }
     }
 
@@ -1620,6 +1619,64 @@ vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
     return solucaoCopia;
 }
 
+vector<vector<int>> perturbacaoInverter(vector<vector<int>> &solucao, int numeroLinhas)
+{
+    // Cria uma cópia da solução original
+    vector<vector<int>> solucaoCopia = solucao;
+
+    // Inicializa o gerador de números aleatórios
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+
+    // Gera um número aleatório para determinar quantas linhas serão afetadas
+    std::uniform_int_distribution<int> dist(1, numeroLinhas);
+    int numeroLinhasAfetadas = dist(gen);
+
+    // Cria um vetor para armazenar as linhas não usadas
+    vector<int> linhasNaoUsadas(numeroLinhas);
+    for (int i = 0; i < numeroLinhas; i++)
+        linhasNaoUsadas[i] = i;
+
+    // Cria um vetor para armazenar as linhas afetadas
+    vector<int> linhasAfetadas;
+    linhasAfetadas.resize(numeroLinhasAfetadas);
+
+    if (numeroLinhasAfetadas != numeroLinhas)
+    {
+        for (int i = 0; i < numeroLinhasAfetadas; i++)
+        {
+            // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
+            std::uniform_int_distribution<int> dist(0, linhasNaoUsadas.size() - 1);
+            int posicaoLinha = dist(gen);
+            int realLinha = linhasNaoUsadas[posicaoLinha];
+
+            // Remove a linha selecionada do vetor de linhas não usadas e adiciona ao vetor de linhas afetadas
+            linhasNaoUsadas.erase(linhasNaoUsadas.begin() + posicaoLinha);
+            linhasAfetadas[i] = realLinha;
+        }
+    }
+
+    else
+    {
+        linhasAfetadas = linhasNaoUsadas;
+    }
+
+    // Itera sobre cada linha da solução
+    for (int i = 0; i < numeroLinhasAfetadas; i++)
+    {
+        // Itera sobre os elementos da linha atual
+        for (int j = 0; j < solucao[linhasAfetadas[i]].size() / 2; j++)
+        {
+            int temp = solucaoCopia[linhasAfetadas[i]][j];
+            solucaoCopia[linhasAfetadas[i]][j] = solucaoCopia[linhasAfetadas[i]][solucaoCopia[linhasAfetadas[i]].size() - 1 - j];
+            solucaoCopia[linhasAfetadas[i]][solucaoCopia[linhasAfetadas[i]].size() - 1 - j] = temp;
+        }
+    }
+
+    // Retorna a solução perturbada
+    return solucaoCopia;
+}
+
 vector<vector<int>> heuristicaILS(vector<int> &vetorProdutos, vector<vector<int>> &matrizPreparacao, int numeroLinhas, int produtos, int numeroIteracoes)
 {
     vector<vector<int>> melhorSolucao;
@@ -1685,21 +1742,36 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
     vector<vector<int>> melhorSolucao;
     int tempoAtual = 0;
 
+    // Inicializa o gerador de números aleatórios
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<int> dist(0, 1);
+
     for (int r = 0; r < numeroIteracoes; r++)
     {
-        vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 0.3);
-        // vector<vector<int>> solucaoInicial = gerarSolucaoGulosa(vetorProdutos.size(), numeroLinhas, matrizPreparacao, vetorProdutos);
+        // vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 0.3);
+        vector<vector<int>> solucaoInicial = gerarSolucaoGulosa(vetorProdutos.size(), numeroLinhas, matrizPreparacao, vetorProdutos);
 
-        solucaoInicial = perturbacao(solucaoInicial, numeroLinhas);
+        int perturbacaoUtilizada = dist(gen);
+
+        switch (perturbacaoUtilizada)
+        {
+        case 0:
+            solucaoInicial = perturbacao(solucaoInicial, numeroLinhas);
+            break;
+        case 1:
+            solucaoInicial = perturbacaoInverter(solucaoInicial, numeroLinhas);
+            break;
+        }
 
         vector<int> novosTempos = temposProducao(solucaoInicial, matrizPreparacao, vetorProdutos);
 
         // Padrão: VND
 
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         // Alternativo: RVND
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
 

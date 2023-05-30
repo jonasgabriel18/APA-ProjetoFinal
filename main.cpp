@@ -19,8 +19,8 @@ int main()
 	// string localArquivo = "./instancias/n15m3_A.txt";
 	// string localArquivo = "./instancias/n29m4_B.txt";
 	// string localArquivo = "./instancias/n40m5_B.txt";
-	// string localArquivo = "./instancias/n52m5_B.txt";
-	string localArquivo = "./instancias/n450m16_A.txt";
+	string localArquivo = "./instancias/n52m5_B.txt";
+	// string localArquivo = "./instancias/n450m16_A.txt";
 	// string localArquivo = "./instancias/n500m10_A.txt";
 
 	// Chamando a função para definir as informações do arquivo
