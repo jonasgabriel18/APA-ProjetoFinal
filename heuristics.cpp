@@ -138,102 +138,6 @@ vector<int> temposProducao(vector<vector<int>> &solucao, vector<vector<int>> &ma
 
 // * Busca Local
 
-// * Movimentos de Vizinhaças - Força Bruta
-
-vector<vector<int>> movimentoHorizontal(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
-{
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    vector<vector<int>> melhorSolucao = solucao;
-    vector<vector<int>> solucaoCopia = solucao;
-
-    for (int i = 0; i < solucao.size(); i++)
-    {
-        // Itera sobre os produtos na linha atual
-        for (int j = 0; j < solucaoCopia[i].size(); j++)
-        {
-            int produtoAtual = solucaoCopia[i][j];
-
-            // Tenta substituir o produto atual por outros produtos subsequentes na linha
-            for (int k = j + 1; k < solucaoCopia[i].size(); k++)
-            {
-                vector<int> temposSolucaoAtual = temposSolucao;
-                int produtoSubs = solucaoCopia[i][k];
-                solucaoCopia[i][j] = produtoSubs;
-                solucaoCopia[i][k] = produtoAtual;
-
-                // Constrói uma solução possível com as trocas feitas
-                vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
-                int possivelMaiorTempo = *max_element(temposPossiveis.begin(), temposPossiveis.end());
-
-                // Verifica se a solução possível tem um tempo total menor que o tempo atual
-                if (possivelMaiorTempo < tempoAtual)
-                {
-                    tempoAtual = possivelMaiorTempo;
-                    melhorSolucao = solucaoCopia;
-                }
-
-                // Desfaz a troca para a próxima iteração do loop
-                solucaoCopia[i][j] = produtoAtual;
-                solucaoCopia[i][k] = produtoSubs;
-            }
-        }
-    }
-
-    return melhorSolucao;
-}
-
-vector<vector<int>> movimentoVertical(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
-{
-    // Tempo atual da melhor solução
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    // Melhor configuração das linhas de produção
-    vector<vector<int>> melhorSolucao = solucao;
-    // Cópia das linhas de produção para realizar as trocas
-    vector<vector<int>> solucaoCopia = solucao;
-
-    for (int i = 0; i < solucao.size(); i++)
-    {
-        for (int j = 0; j < solucaoCopia[i].size(); j++)
-        {
-            for (int k = i + 1; k < solucao.size(); k++)
-            {
-                // Produto atual da linha i
-                int produtoAtual = solucaoCopia[i][j];
-
-                for (int l = 0; l < solucaoCopia[k].size(); l++)
-                {
-                    // Produto a ser substituído da linha k
-                    int produtoSubs = solucaoCopia[k][l];
-
-                    // Substitui o produto atual pelo produto de substituição na linha i
-                    solucaoCopia[i][j] = produtoSubs;
-                    // Substitui o produto de substituição pelo produto atual na linha k
-                    solucaoCopia[k][l] = produtoAtual;
-
-                    // Avalia a nova configuração das linhas de produção
-                    vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
-                    int possivelMaiorTempo = *max_element(temposPossiveis.begin(), temposPossiveis.end());
-
-                    if (possivelMaiorTempo < tempoAtual)
-                    {
-                        // Atualiza o tempo atual da melhor solução
-                        tempoAtual = possivelMaiorTempo;
-                        // Atualiza a melhor configuração das linhas de produção
-                        melhorSolucao = solucaoCopia;
-                    }
-
-                    // Desfaz a troca para a próxima iteração do loop
-                    solucaoCopia[i][j] = produtoAtual;
-                    solucaoCopia[k][l] = produtoSubs;
-                }
-            }
-        }
-    }
-
-    // Retorna a melhor configuração das linhas de produção encontrada
-    return melhorSolucao;
-}
-
 vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
@@ -264,363 +168,6 @@ vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vecto
 
     return melhorSolucao;
 }
-
-vector<vector<int>> movimentoInsercao(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
-{
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-
-    vector<vector<int>> melhorSolucao = solucao;
-
-    for (int i = 0; i < solucao.size(); i++)
-    {
-        for (int j = 0; j < solucao[i].size(); j++)
-        {
-            vector<vector<int>> solucaoCopia = solucao;
-
-            int produtoAtual = solucaoCopia[i][j];
-
-            // Remove o produto atual da linha atual
-            solucaoCopia[i].erase(remove(solucaoCopia[i].begin(), solucaoCopia[i].end(), produtoAtual), solucaoCopia[i].end());
-
-            vector<vector<int>> linhasSubs = solucaoCopia;
-
-            for (int k = i + 1; k < solucao.size(); k++)
-            {
-                for (int l = 0; l < solucaoCopia[k].size(); l++)
-                {
-                    // Insere o produto atual em diferentes posições nas linhas subsequentes
-                    solucaoCopia[k].insert(solucaoCopia[k].begin() + l, produtoAtual);
-
-                    // Avalia a nova configuração das linhas de produção
-                    vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
-                    int possivelMaiorTempo = *max_element(temposPossiveis.begin(), temposPossiveis.end());
-
-                    if (possivelMaiorTempo < tempoAtual)
-                    {
-                        // Atualiza o tempo atual da melhor solução
-                        tempoAtual = possivelMaiorTempo;
-                        // Atualiza a melhor configuração das linhas de produção
-                        melhorSolucao = solucaoCopia;
-                    }
-
-                    // Restaura as linhas de produção para a configuração original
-                    solucaoCopia = linhasSubs;
-                }
-            }
-        }
-    }
-
-    return melhorSolucao;
-}
-
-// * Movimentos de Vizinhanças - Otimizado V1
-
-vector<vector<int>> trocarProdutosMesmaLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
-{
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    vector<vector<int>> melhorSolucao = solucao;
-    vector<vector<int>> solucaoCopia = solucao;
-
-    for (int i = 0; i < solucao.size(); i++)
-    {
-        // Itera sobre os produtos na linha atual
-        for (int j = 0; j < solucaoCopia[i].size(); j++)
-        {
-            int produtoAtual = solucaoCopia[i][j];
-
-            // Tenta substituir o produto atual por outros produtos subsequentes na linha
-            for (int k = j + 1; k < solucaoCopia[i].size(); k++)
-            {
-                vector<int> temposSolucaoAtual = temposSolucao;
-
-                int produtoSubs = solucaoCopia[i][k];
-
-                solucaoCopia[i][j] = produtoSubs;
-                solucaoCopia[i][k] = produtoAtual;
-
-                int ant_prodAtual = solucaoCopia[i][j - 1];
-                int prox_prodAtual = solucaoCopia[i][j + 1];
-
-                int ant_prodSubs = solucaoCopia[i][k - 1];
-                int prox_prodSubs = solucaoCopia[i][k + 1];
-
-                // Se o produtoAtual é o 1° da linha
-                if (j == 0)
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                }
-
-                // Se o produtoAtual é o último da linha
-                else if (j == solucaoCopia[i].size() - 1)
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                }
-
-                // Se o produtoAtual está entre o 1° e o último
-                else
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                    temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                }
-
-                // Se o produtoSubs é o 1° produto após o produtoAtual
-                if (k == j + 1 && k != solucaoCopia[i].size() - 1)
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[produtoSubs][prox_prodSubs];
-                    temposSolucaoAtual[i] += matrizPreparacao[produtoAtual][prox_prodSubs];
-                }
-
-                // Se o produtoSubs é o último da linha
-                else if (k == solucaoCopia[i].size() - 1)
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodSubs][produtoSubs];
-                    temposSolucaoAtual[i] += matrizPreparacao[ant_prodSubs][produtoAtual];
-                }
-
-                // Se o produtoSubs está entre o produtoAtual e o último
-                else
-                {
-                    temposSolucaoAtual[i] -= matrizPreparacao[ant_prodSubs][produtoSubs];
-                    temposSolucaoAtual[i] -= matrizPreparacao[produtoSubs][prox_prodSubs];
-
-                    temposSolucaoAtual[i] += matrizPreparacao[ant_prodSubs][produtoAtual];
-                    temposSolucaoAtual[i] += matrizPreparacao[produtoAtual][prox_prodSubs];
-                }
-
-                // Constrói uma solução possível com as trocas feitas
-                int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                // Verifica se a solução possível tem um tempo total menor que o tempo atual
-                if (possivelMaiorTempo < tempoAtual)
-                {
-                    tempoAtual = possivelMaiorTempo;
-                    melhorSolucao = solucaoCopia;
-                }
-
-                // Desfaz a troca para a próxima iteração do loop
-                solucaoCopia[i][j] = produtoAtual;
-                solucaoCopia[i][k] = produtoSubs;
-            }
-        }
-    }
-
-    return melhorSolucao;
-}
-
-vector<vector<int>> trocarProdutosEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
-{
-    // Tempo atual da melhor solução
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    // Melhor configuração das linhas de produção
-    vector<vector<int>> melhorSolucao = solucao;
-    // Cópia das linhas de produção para realizar as trocas
-    vector<vector<int>> solucaoCopia = solucao;
-
-    for (int i = 0; i < solucaoCopia.size(); i++)
-    {
-        for (int j = 0; j < solucaoCopia[i].size(); j++)
-        {
-            for (int k = i + 1; k < solucaoCopia.size(); k++)
-            {
-                // Produto atual da linha i
-                int produtoAtual = solucaoCopia[i][j];
-
-                for (int l = 0; l < solucaoCopia[k].size(); l++)
-                {
-
-                    // Produto a ser substituído da linha k
-                    int produtoSubs = solucaoCopia[k][l];
-
-                    // Substitui o produto atual pelo produto de substituição na linha i
-                    solucaoCopia[i][j] = produtoSubs;
-                    // Substitui o produto de substituição pelo produto atual na linha k
-                    solucaoCopia[k][l] = produtoAtual;
-
-                    // Avalia a nova configuração das linhas de produção
-                    // vector<int> temposPossiveis = temposProducao(solucaoCopia, matrizPreparacao, vetorProdutos);
-                    vector<int> temposSolucaoAtual = temposSolucao;
-
-                    // Removendo o tempo de produtoAtual na linha dele
-                    // Adicionando o tempo de produtoSubs na linha
-                    temposSolucaoAtual[i] -= vetorProdutos[produtoAtual];
-                    temposSolucaoAtual[i] += vetorProdutos[produtoSubs];
-
-                    // Removendo o tempo de produtoSubs na linha dele
-                    // Adicionando o tempo de produtoAtual na linha
-                    temposSolucaoAtual[k] -= vetorProdutos[produtoSubs];
-                    temposSolucaoAtual[k] += vetorProdutos[produtoAtual];
-
-                    int ant_prodAtual = solucaoCopia[i][j - 1];
-                    int prox_prodAtual = solucaoCopia[i][j + 1];
-
-                    int ant_prodSubs = solucaoCopia[k][l - 1];
-                    int prox_prodSubs = solucaoCopia[k][l + 1];
-
-                    // Se o produtoAtual é o 1° da linha
-                    if (j == 0)
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                        temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
-                    }
-
-                    // Se o produtoAtual é o último da linha
-                    else if (j == solucaoCopia[i].size() - 1)
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][produtoSubs];
-                    }
-
-                    // Se o produtoAtual está entre o 1° e o último
-                    else
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-
-                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][produtoSubs];
-                        temposSolucaoAtual[i] += matrizPreparacao[produtoSubs][prox_prodAtual];
-                    }
-
-                    // Se produtoSubs é o 1° da linha
-                    if (l == 0)
-                    {
-                        temposSolucaoAtual[k] -= matrizPreparacao[produtoSubs][prox_prodSubs];
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][prox_prodSubs];
-                    }
-
-                    // Se produtoSubs é o último da linha
-                    else if (l == solucaoCopia[k].size() - 1)
-                    {
-                        temposSolucaoAtual[k] -= matrizPreparacao[ant_prodSubs][produtoSubs];
-                        temposSolucaoAtual[k] += matrizPreparacao[ant_prodSubs][produtoAtual];
-                    }
-
-                    // Se produtoSubs está entre o 1° e o último
-                    else
-                    {
-                        temposSolucaoAtual[k] -= matrizPreparacao[ant_prodSubs][produtoSubs];
-                        temposSolucaoAtual[k] -= matrizPreparacao[produtoSubs][prox_prodSubs];
-
-                        temposSolucaoAtual[k] += matrizPreparacao[ant_prodSubs][produtoAtual];
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][prox_prodSubs];
-                    }
-
-                    int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                    if (possivelMaiorTempo < tempoAtual)
-                    {
-                        // Atualiza o tempo atual da melhor solução
-                        tempoAtual = possivelMaiorTempo;
-                        // Atualiza a melhor configuração das linhas de produção
-                        melhorSolucao = solucaoCopia;
-                    }
-
-                    // Desfaz a troca para a próxima iteração do loop
-                    solucaoCopia[i][j] = produtoAtual;
-                    solucaoCopia[k][l] = produtoSubs;
-                }
-            }
-        }
-    }
-
-    // Retorna a melhor configuração das linhas de produção encontrada
-    return melhorSolucao;
-}
-
-vector<vector<int>> inserirProdutoEmOutrasPosicoes(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
-{
-    int tempoAtual = *max_element(temposSolucao.begin(), temposSolucao.end());
-    vector<vector<int>> melhorSolucao = solucao;
-    vector<vector<int>> solucaoCopia = solucao;
-
-    for (int i = 0; i < solucaoCopia.size(); i++)
-    {
-        for (int j = 0; j < solucaoCopia[i].size(); j++)
-        {
-            int produtoAtual = solucaoCopia[i][j];
-
-            for (int k = i + 1; k < solucaoCopia.size(); k++)
-            {
-                for (int l = 0; l < solucaoCopia[k].size(); l++)
-                {
-
-                    vector<int> temposSolucaoAtual = temposSolucao;
-
-                    int ant_prodAtual = solucaoCopia[i][j - 1];
-                    int prox_prodAtual = solucaoCopia[i][j + 1];
-
-                    int produtoSeguinte = solucaoCopia[k][l];
-                    int produtoAnterior = solucaoCopia[k][l - 1];
-
-                    // Remover o tempo do produtoAtual e suas conexões da linha que ele está
-                    temposSolucaoAtual[i] -= vetorProdutos[produtoAtual];
-
-                    // Se o produtoAtual for o 1° da linha
-                    if (j == 0)
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-                    }
-
-                    // Se o produtoAtual for o último da linha
-                    else if (j == solucaoCopia[i].size() - 1)
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                    }
-
-                    // Se o produtoAtual está entre o 1° e o último
-                    else
-                    {
-                        temposSolucaoAtual[i] -= matrizPreparacao[ant_prodAtual][produtoAtual];
-                        temposSolucaoAtual[i] -= matrizPreparacao[produtoAtual][prox_prodAtual];
-
-                        temposSolucaoAtual[i] += matrizPreparacao[ant_prodAtual][prox_prodAtual];
-                    }
-
-                    // Adicionando o tempo de produtoAtual e suas conexões na linha em questão
-                    temposSolucaoAtual[k] += vetorProdutos[produtoAtual];
-
-                    // Inserindo o produtoAtual no começo da linha
-                    if (l == 0)
-                    {
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][produtoSeguinte];
-                    }
-
-                    // Inserindo no final da linha
-                    else if (l == solucaoCopia[k].size())
-                    {
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAnterior][produtoAtual];
-                    }
-
-                    // Inserindo entre o 1° e o último
-                    else
-                    {
-                        temposSolucaoAtual[k] -= matrizPreparacao[produtoAnterior][produtoSeguinte];
-
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAtual][produtoSeguinte];
-                        temposSolucaoAtual[k] += matrizPreparacao[produtoAnterior][produtoAtual];
-                    }
-
-                    int possivelMaiorTempo = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
-
-                    if (possivelMaiorTempo < tempoAtual)
-                    {
-                        // Adicionando na linha o produtoAtual
-                        solucaoCopia[k].insert(solucaoCopia[k].begin() + l, produtoAtual);
-                        // Atualiza o tempo atual da melhor solução
-                        tempoAtual = possivelMaiorTempo;
-                        // Atualiza a melhor configuração das linhas de produção
-                        melhorSolucao = solucaoCopia;
-                        // Removendo da linha o produtoAtual
-                        solucaoCopia[k].erase(remove(solucaoCopia[k].begin(), solucaoCopia[k].end(), produtoAtual), solucaoCopia[k].end());
-                    }
-                }
-            }
-        }
-    }
-
-    return melhorSolucao;
-}
-
-// * Movimentos de Vizinhanças - Otimizado V2
 
 // | Horizontal
 
@@ -1330,71 +877,6 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
 
 // * Meta-herusística: GRASP com VND
 
-vector<vector<int>> heuristicaGRASP(vector<int> &vetorProdutos, vector<vector<int>> &matrizPreparacao, int numeroLinhas, int produtos, int numeroIteracoes)
-{
-    // Variável para armazenar a melhor solução encontrada
-    vector<vector<int>> melhorSolucao;
-    int tempoAtual = 0;
-
-    // Inicialização do gerador de números aleatórios
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dist(0, produtos - 1);
-
-    // Iteração principal do algoritmo GRASP
-    for (int r = 0; r < numeroIteracoes; r++)
-    {
-        // Criação de uma solução inicial aleatória
-        vector<vector<int>> solucaoInicial(numeroLinhas, vector<int>());
-        unordered_set<int> produtosUsados;
-
-        int linha = 0;
-        for (int i = 0; i < produtos; i++)
-        {
-            // Seleciona um produto aleatório que ainda não foi utilizado
-            int produtoAtual = dist(gen);
-
-            while (produtosUsados.count(produtoAtual) > 0)
-            {
-                produtoAtual = dist(gen);
-            }
-
-            produtosUsados.insert(produtoAtual);
-            solucaoInicial[linha].push_back(produtoAtual);
-
-            // Distribui os produtos entre as linhas
-            linha += 1;
-            if (linha == numeroLinhas)
-                linha = 0;
-        }
-
-        // Calcula os tempos de produção para a solução inicial
-        vector<int> novosTempos = temposProducao(solucaoInicial, matrizPreparacao, vetorProdutos);
-
-        // Aplica melhorias na solução inicial usando a estratégia VND
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-
-        // Aplica melhorias na solução inicial usando a estratégia RVND
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-
-        // Calcula os tempos de produção após as melhorias
-        vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
-
-        // Encontra o maior tempo de produção na solução com melhorias
-        int tempoMelhor = *max_element(tempoComMelhorias.begin(), tempoComMelhorias.end());
-
-        // Verifica se a nova solução é a melhor encontrada até o momento
-        if (r == 0 || tempoMelhor < tempoAtual)
-        {
-            tempoAtual = tempoMelhor;
-            melhorSolucao = solucaoComMelhorias;
-        }
-    }
-
-    // Retorna a melhor solução encontrada
-    return melhorSolucao;
-}
-
 vector<int> listaCandidatosRestritos(vector<int> &vetorProdutos, vector<int> &indicesProdutosUsados, float alfa)
 {
     // alfa = 1 -> guloso
@@ -1527,8 +1009,8 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
         int tempoInicial = *max_element(novosTempos.begin(), novosTempos.end());
 
         // Tentando melhorar a solução
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
+        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         // Tempos para a solução possivelmente melhorada
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
@@ -1562,8 +1044,8 @@ vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
     std::mt19937 gen(seed);
 
     // Gera um número aleatório para determinar quantas linhas serão afetadas
-    std::uniform_int_distribution<int> dist(0, numeroLinhas - 1);
-    int numeroLinhasAfetadas = dist(gen);
+    std::uniform_int_distribution<int> sorteioNumeroLinha(1, numeroLinhas);
+    int numeroLinhasAfetadas = sorteioNumeroLinha(gen);
 
     // Cria um vetor para armazenar as linhas não usadas
     vector<int> linhasNaoUsadas(numeroLinhas);
@@ -1572,20 +1054,25 @@ vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
 
     // Cria um vetor para armazenar as linhas afetadas
     vector<int> linhasAfetadas = linhasNaoUsadas;
-    if (numeroLinhasAfetadas != numeroLinhas - 1)
+    linhasAfetadas.resize(numeroLinhasAfetadas);
+
+    if (numeroLinhasAfetadas != numeroLinhas)
     {
-        linhasAfetadas.resize(numeroLinhasAfetadas);
         for (int i = 0; i < numeroLinhasAfetadas; i++)
         {
             // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
-            std::uniform_int_distribution<int> dist(0, linhasNaoUsadas.size() - 1);
-            int posicaoLinha = dist(gen);
+            std::uniform_int_distribution<int> sorteioLinha(0, linhasNaoUsadas.size() - 1);
+            int posicaoLinha = sorteioLinha(gen);
             int realLinha = linhasNaoUsadas[posicaoLinha];
 
             // Remove a linha selecionada do vetor de linhas não usadas e adiciona ao vetor de linhas afetadas
             linhasNaoUsadas.erase(linhasNaoUsadas.begin() + posicaoLinha);
             linhasAfetadas[i] = realLinha;
         }
+    }
+    else
+    {
+        linhasAfetadas = linhasNaoUsadas;
     }
 
     // Itera sobre cada linha da solução
@@ -1598,10 +1085,10 @@ vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
         for (int j = 0; j < solucao[linhasAfetadas[i]].size(); j++)
         {
             // Distribuição uniforme para selecionar uma posição aleatória
-            std::uniform_int_distribution<int> dist(0, solucaoCopia[linhasAfetadas[i]].size() - 1);
+            std::uniform_int_distribution<int> posicaoProduto(0, solucaoCopia[linhasAfetadas[i]].size() - 1);
 
             // Obtém uma posição aleatória e o produto correspondente
-            int posicao = dist(gen);
+            int posicao = posicaoProduto(gen);
             int produtoAtual = solucaoCopia[linhasAfetadas[i]][posicao];
 
             // Remove o produto atual da cópia da linha
@@ -1629,8 +1116,8 @@ vector<vector<int>> perturbacaoInverter(vector<vector<int>> &solucao, int numero
     std::mt19937 gen(seed);
 
     // Gera um número aleatório para determinar quantas linhas serão afetadas
-    std::uniform_int_distribution<int> dist(1, numeroLinhas);
-    int numeroLinhasAfetadas = dist(gen);
+    std::uniform_int_distribution<int> sorteioNumeroLinha(1, numeroLinhas);
+    int numeroLinhasAfetadas = sorteioNumeroLinha(gen);
 
     // Cria um vetor para armazenar as linhas não usadas
     vector<int> linhasNaoUsadas(numeroLinhas);
@@ -1646,8 +1133,8 @@ vector<vector<int>> perturbacaoInverter(vector<vector<int>> &solucao, int numero
         for (int i = 0; i < numeroLinhasAfetadas; i++)
         {
             // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
-            std::uniform_int_distribution<int> dist(0, linhasNaoUsadas.size() - 1);
-            int posicaoLinha = dist(gen);
+            std::uniform_int_distribution<int> sorteioLinha(0, linhasNaoUsadas.size() - 1);
+            int posicaoLinha = sorteioLinha(gen);
             int realLinha = linhasNaoUsadas[posicaoLinha];
 
             // Remove a linha selecionada do vetor de linhas não usadas e adiciona ao vetor de linhas afetadas
@@ -1677,64 +1164,84 @@ vector<vector<int>> perturbacaoInverter(vector<vector<int>> &solucao, int numero
     return solucaoCopia;
 }
 
-vector<vector<int>> heuristicaILS(vector<int> &vetorProdutos, vector<vector<int>> &matrizPreparacao, int numeroLinhas, int produtos, int numeroIteracoes)
+vector<vector<int>> perturbacaoVertical(vector<vector<int>> &solucao, int numeroLinhas)
 {
-    vector<vector<int>> melhorSolucao;
-    int tempoAtual = 0;
+    // Cria uma cópia da solução original
+    vector<vector<int>> solucaoCopia = solucao;
 
-    double tempo;
-    chrono::duration<double> duracao;
-
+    // Inicializa o gerador de números aleatórios
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dist(0, produtos - 1);
 
-    for (int r = 0; r < numeroIteracoes; r++)
+    // Sorteio para determinar se o produto será trocado ou não
+    std::uniform_int_distribution<int> sorteioTroca(0, 1);
+
+    // Gera um número aleatório para determinar quantas linhas serão afetadas
+    std::uniform_int_distribution<int> sorteioNumeroLinhas(2, numeroLinhas);
+    int numeroLinhasAfetadas = sorteioNumeroLinhas(gen);
+
+    // Cria um vetor para armazenar as linhas não usadas
+    vector<int> linhasNaoUsadas(numeroLinhas);
+    for (int i = 0; i < numeroLinhas; i++)
+        linhasNaoUsadas[i] = i;
+
+    // Cria um vetor para armazenar as linhas afetadas
+    vector<int> linhasAfetadas;
+    linhasAfetadas.resize(numeroLinhasAfetadas);
+
+    if (numeroLinhasAfetadas != numeroLinhas)
     {
-        vector<vector<int>> solucaoInicial(numeroLinhas, vector<int>());
-        unordered_set<int> produtosUsados;
-
-        int linha = 0;
-        for (int i = 0; i < produtos; i++)
+        for (int i = 0; i < numeroLinhasAfetadas; i++)
         {
-            int produtoAtual = dist(gen);
+            // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
+            std::uniform_int_distribution<int> sorteioLinha(0, linhasNaoUsadas.size() - 1);
+            int posicaoLinha = sorteioLinha(gen);
+            int realLinha = linhasNaoUsadas[posicaoLinha];
 
-            while (produtosUsados.count(produtoAtual) > 0)
-            {
-                produtoAtual = dist(gen);
-            }
-
-            produtosUsados.insert(produtoAtual);
-            solucaoInicial[linha].push_back(produtoAtual);
-
-            linha += 1;
-            if (linha == numeroLinhas)
-                linha = 0;
+            // Remove a linha selecionada do vetor de linhas não usadas e adiciona ao vetor de linhas afetadas
+            linhasNaoUsadas.erase(linhasNaoUsadas.begin() + posicaoLinha);
+            linhasAfetadas[i] = realLinha;
         }
+    }
+    else
+    {
+        linhasAfetadas = linhasNaoUsadas;
+    }
 
-        solucaoInicial = perturbacao(solucaoInicial, numeroLinhas);
+    // Escolhe qual a linha que será o pivô
+    std::uniform_int_distribution<int> linhaPivo(0, linhasAfetadas.size() - 1);
+    int sorteioLinhaEscolhida = linhaPivo(gen);
+    int linhaEscolhida = linhasAfetadas[sorteioLinhaEscolhida];
+    linhasAfetadas.erase(linhasAfetadas.begin() + sorteioLinhaEscolhida);
 
-        vector<int> novosTempos = temposProducao(solucaoInicial, matrizPreparacao, vetorProdutos);
+    // Itera sobre cada linha da solução
+    for (int i = 0; i < solucaoCopia[linhaEscolhida].size(); i++)
+    {
+        int trocar = sorteioTroca(gen);
 
-        // Padrão: VND
-
-        vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-
-        // Alternativo: RVND
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-
-        vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
-
-        int tempoMelhor = *max_element(tempoComMelhorias.begin(), tempoComMelhorias.end());
-
-        if (r == 0 || tempoMelhor < tempoAtual)
+        if (trocar)
         {
-            tempoAtual = tempoMelhor;
-            melhorSolucao = solucaoComMelhorias;
+            // Produto que vai sair da linha pivô
+            int produtoSaida = solucaoCopia[linhaEscolhida][i];
+
+            // Escolher qual a linha e o produto dela que será trocado de maneira aleatória
+            std::uniform_int_distribution<int> linhaProduto(0, linhasAfetadas.size() - 1);
+            int linhaTroca = linhasAfetadas[linhaProduto(gen)];
+
+            std::uniform_int_distribution<int> posicaoProduto(0, solucaoCopia[linhaTroca].size() - 1);
+            int sorteioProduto = posicaoProduto(gen);
+
+            // Produto que vai entrar na linha pivô
+            int produtoEntrada = solucaoCopia[linhaTroca][sorteioProduto];
+
+            // Realizando a troca
+            solucaoCopia[linhaEscolhida][i] = produtoEntrada;
+            solucaoCopia[linhaTroca][sorteioProduto] = produtoSaida;
         }
     }
 
-    return melhorSolucao;
+    // Retorna a solução perturbada
+    return solucaoCopia;
 }
 
 vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes)
@@ -1745,11 +1252,11 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
     // Inicializa o gerador de números aleatórios
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dist(0, 1);
+    std::uniform_int_distribution<int> dist(0, 2);
 
     for (int r = 0; r < numeroIteracoes; r++)
     {
-        // vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 0.3);
+        // vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 1);
         vector<vector<int>> solucaoInicial = gerarSolucaoGulosa(vetorProdutos.size(), numeroLinhas, matrizPreparacao, vetorProdutos);
 
         int perturbacaoUtilizada = dist(gen);
@@ -1761,6 +1268,9 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
             break;
         case 1:
             solucaoInicial = perturbacaoInverter(solucaoInicial, numeroLinhas);
+            break;
+        case 2:
+            solucaoInicial = perturbacaoVertical(solucaoInicial, numeroLinhas);
             break;
         }
 
