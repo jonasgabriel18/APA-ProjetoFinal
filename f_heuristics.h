@@ -33,8 +33,7 @@ std::vector<std::vector<int>> melhorarLinhasRVND(std::vector<std::vector<int>> &
 std::vector<int> listaCandidatosRestritos(std::vector<int> &vetorProdutos, std::vector<int> &sindicesProdutosUsados, float alfa);
 std::vector<std::vector<int>> grasp(std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes, float alfa);
 
-std::vector<std::vector<int>> perturbacao(std::vector<std::vector<int>> &solucao, int numeroLinhas);
-std::vector<std::vector<int>> perturbacaoInverter(std::vector<std::vector<int>> &solucao, int numeroLinhas);
+std::vector<std::vector<int>> perturbacaoHorizontal(std::vector<std::vector<int>> &solucao, int numeroLinhas);
 std::vector<std::vector<int>> perturbacaoVertical(std::vector<std::vector<int>> &solucao, int numeroLinhas);
 
 std::vector<std::vector<int>> ils(std::vector<std::vector<int>> &matrizPreparacao, std::vector<int> &vetorProdutos, int numeroLinhas, int numeroIteracoes);

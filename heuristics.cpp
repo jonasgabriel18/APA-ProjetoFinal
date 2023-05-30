@@ -1034,7 +1034,7 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
 
 // * Meta-heurística: ILS com VND
 
-vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
+vector<vector<int>> perturbacaoHorizontal(vector<vector<int>> &solucao, int numeroLinhas)
 {
     // Cria uma cópia da solução original
     vector<vector<int>> solucaoCopia = solucao;
@@ -1100,64 +1100,6 @@ vector<vector<int>> perturbacao(vector<vector<int>> &solucao, int numeroLinhas)
 
         // Substitui a linha perturbada pela lista temporária
         solucaoCopia[linhasAfetadas[i]] = listaTemp;
-    }
-
-    // Retorna a solução perturbada
-    return solucaoCopia;
-}
-
-vector<vector<int>> perturbacaoInverter(vector<vector<int>> &solucao, int numeroLinhas)
-{
-    // Cria uma cópia da solução original
-    vector<vector<int>> solucaoCopia = solucao;
-
-    // Inicializa o gerador de números aleatórios
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
-
-    // Gera um número aleatório para determinar quantas linhas serão afetadas
-    std::uniform_int_distribution<int> sorteioNumeroLinha(1, numeroLinhas);
-    int numeroLinhasAfetadas = sorteioNumeroLinha(gen);
-
-    // Cria um vetor para armazenar as linhas não usadas
-    vector<int> linhasNaoUsadas(numeroLinhas);
-    for (int i = 0; i < numeroLinhas; i++)
-        linhasNaoUsadas[i] = i;
-
-    // Cria um vetor para armazenar as linhas afetadas
-    vector<int> linhasAfetadas;
-    linhasAfetadas.resize(numeroLinhasAfetadas);
-
-    if (numeroLinhasAfetadas != numeroLinhas)
-    {
-        for (int i = 0; i < numeroLinhasAfetadas; i++)
-        {
-            // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
-            std::uniform_int_distribution<int> sorteioLinha(0, linhasNaoUsadas.size() - 1);
-            int posicaoLinha = sorteioLinha(gen);
-            int realLinha = linhasNaoUsadas[posicaoLinha];
-
-            // Remove a linha selecionada do vetor de linhas não usadas e adiciona ao vetor de linhas afetadas
-            linhasNaoUsadas.erase(linhasNaoUsadas.begin() + posicaoLinha);
-            linhasAfetadas[i] = realLinha;
-        }
-    }
-
-    else
-    {
-        linhasAfetadas = linhasNaoUsadas;
-    }
-
-    // Itera sobre cada linha da solução
-    for (int i = 0; i < numeroLinhasAfetadas; i++)
-    {
-        // Itera sobre os elementos da linha atual
-        for (int j = 0; j < solucao[linhasAfetadas[i]].size() / 2; j++)
-        {
-            int temp = solucaoCopia[linhasAfetadas[i]][j];
-            solucaoCopia[linhasAfetadas[i]][j] = solucaoCopia[linhasAfetadas[i]][solucaoCopia[linhasAfetadas[i]].size() - 1 - j];
-            solucaoCopia[linhasAfetadas[i]][solucaoCopia[linhasAfetadas[i]].size() - 1 - j] = temp;
-        }
     }
 
     // Retorna a solução perturbada
@@ -1252,7 +1194,7 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
     // Inicializa o gerador de números aleatórios
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dist(0, 2);
+    std::uniform_int_distribution<int> dist(0, 1);
 
     for (int r = 0; r < numeroIteracoes; r++)
     {
@@ -1264,12 +1206,9 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
         switch (perturbacaoUtilizada)
         {
         case 0:
-            solucaoInicial = perturbacao(solucaoInicial, numeroLinhas);
+            solucaoInicial = perturbacaoHorizontal(solucaoInicial, numeroLinhas);
             break;
         case 1:
-            solucaoInicial = perturbacaoInverter(solucaoInicial, numeroLinhas);
-            break;
-        case 2:
             solucaoInicial = perturbacaoVertical(solucaoInicial, numeroLinhas);
             break;
         }
