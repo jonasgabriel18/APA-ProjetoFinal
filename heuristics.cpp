@@ -702,26 +702,20 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
         switch (caso)
         {
         case 0:
-            // Chama a função de movimento de inverter
-            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // Chama a função de movimento de inserção
+            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 1:
-            // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
-            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
+            // Chama a função de movimento horizontal
             possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
             break;
         case 2:
-            // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // Chama a função de movimento vertical
             possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 3:
-            // Chama a função de movimento de inserção
-            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // Chama a função de movimento de inverter
+            possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         }
 
@@ -739,7 +733,7 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
             melhorSolucao = possivelMelhorSolucao;
             // Atualiza a solução atual com a nova solução encontrada
             solucaoAtual = possivelMelhorSolucao;
-            // Reinicia o caso para o movimento horizontal (ou trocarProdutosMesmaLinha)
+            // Reinicia o caso para o movimento inverter
             caso = 0;
             temposAnteriores = temposAtuais;
         }
@@ -806,21 +800,15 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
             possivelMelhorSolucao = movimentoInverter(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 1:
-            // Chama a função de movimento horizontal (ou trocarProdutosMesmaLinha)
-            // possivelMelhorSolucao = movimentoHorizontal(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = trocarProdutosMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
+            // Chama a função de movimento horizontal
             possivelMelhorSolucao = novaSolucaoMesmaLinha(solucaoAtual, matrizPreparacao, temposAtuais);
             break;
         case 2:
-            // Chama a função de movimento vertical (ou trocarProdutosEntreLinhas)
-            // possivelMelhorSolucao = movimentoVertical(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = trocarProdutosEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
+            // Chama a função de movimento vertical
             possivelMelhorSolucao = novaSolucaoEntreLinhas(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         case 3:
             // Chama a função de movimento de inserção
-            // possivelMelhorSolucao = movimentoInsercao(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
-            // possivelMelhorSolucao = inserirProdutoEmOutrasPosicoes(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             possivelMelhorSolucao = novaSolucaoReInsertion(solucaoAtual, matrizPreparacao, vetorProdutos, temposAtuais);
             break;
         }
