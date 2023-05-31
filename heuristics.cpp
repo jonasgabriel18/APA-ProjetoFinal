@@ -148,7 +148,7 @@ vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vecto
     auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
     int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
 
-    // Invertendo a ordem dos produtos na linha atual
+    // Invertendo a ordem dos produtos na linha com o maior tempo
     for (int j = 0; j < solucaoCopia[linhaMaiorCusto].size() / 2; j++)
     {
         int temp = solucaoCopia[linhaMaiorCusto][j];
@@ -163,7 +163,6 @@ vector<vector<int>> movimentoInverter(vector<vector<int>> &solucao, vector<vecto
     // Atualiza a melhor configuração das linhas de produção
     if (possivelMaiorTempo < melhorCusto)
     {
-        melhorCusto = possivelMaiorTempo;
         melhorSolucao = solucaoCopia;
     }
 
@@ -335,21 +334,25 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
 
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
 
+    // Encontra a linha com o maior custo da solução
     auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
     int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
 
     vector<int> trocaParaFazer(3, 0); // linha que vai ser modificada, index do primeiro prod, index do prod subs
 
+    // Realizando simulações de trocas na linha com o maior custo
     for (int j = 0; j < solucao[linhaMaiorCusto].size() - 1; j++)
     {
         for (int k = j + 1; k < solucao[linhaMaiorCusto].size(); k++)
         {
             vector<int> temposSolucaoAtual = temposSolucao;
 
+            // Simulação do custo caso fizesse a troca dos produtos
             temposSolucaoAtual[linhaMaiorCusto] = calculoCustoNovoLinha(solucao, matrizPreparacao, temposSolucao, linhaMaiorCusto, j, k);
 
             int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
 
+            // Se o custo reduziu
             if (custoAtual < melhorCusto)
             {
                 melhorCusto = custoAtual;
@@ -366,6 +369,8 @@ vector<int> buscaMelhorCusto(vector<vector<int>> &solucao, vector<vector<int>> &
 
 vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &temposSolucao)
 {
+
+    // Busca qual seria a melhor troca para fazer dada a solução
     vector<int> indicesTroca = buscaMelhorCusto(solucao, matrizPreparacao, temposSolucao);
     int linha = indicesTroca[0];
     int indicePrimeiroProd = indicesTroca[1];
@@ -373,6 +378,7 @@ vector<vector<int>> novaSolucaoMesmaLinha(vector<vector<int>> &solucao, vector<v
 
     vector<vector<int>> novaSolucao = solucao;
 
+    // Realiza a troca
     iter_swap(novaSolucao[linha].begin() + indicePrimeiroProd, novaSolucao[linha].begin() + indiceSubsProd);
 
     return novaSolucao;
@@ -478,6 +484,7 @@ vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vec
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
 
+    // Encontra a linha com o maior custo da solução
     auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
     int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
 
@@ -487,6 +494,8 @@ vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vec
     {
         for (int k = 0; k < solucao.size(); k++)
         {
+
+            // A troca acontecerá apenas em linhas diferentes
             if (k == linhaMaiorCusto)
             {
                 continue;
@@ -495,10 +504,13 @@ vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vec
             for (int l = 0; l < solucao[k].size(); l++)
             {
                 vector<int> temposSolucaoAtual = temposSolucao;
+
+                // Simulação do custo caso fizesse a troca dos produtos
                 temposSolucaoAtual = calculoCustoNovoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao, linhaMaiorCusto, k, j, l);
 
                 int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
 
+                // Se o custo reduziu 
                 if (custoAtual < melhorCusto)
                 {
                     melhorCusto = custoAtual;
@@ -516,6 +528,8 @@ vector<int> buscaMelhorCustoEntreLinhas(vector<vector<int>> &solucao, vector<vec
 
 vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> &solucao, vector<vector<int>> &matrizPreparacao, vector<int> &vetorProdutos, vector<int> &temposSolucao)
 {
+
+    // Busca qual seria a melhor troca para fazer dada a solução
     vector<int> indicesTroca = buscaMelhorCustoEntreLinhas(solucao, matrizPreparacao, vetorProdutos, temposSolucao);
     int linha1 = indicesTroca[0];
     int linha2 = indicesTroca[1];
@@ -523,6 +537,8 @@ vector<vector<int>> novaSolucaoEntreLinhas(vector<vector<int>> &solucao, vector<
     int indiceSubsProd = indicesTroca[3];
 
     vector<vector<int>> novaSolucao = solucao;
+
+    // Realiza a troca
     swap(novaSolucao[linha1][indicePrimeiroProd], novaSolucao[linha2][indiceSubsProd]);
 
     return novaSolucao;
@@ -627,11 +643,13 @@ vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> &solucao, vector<vec
 {
     int melhorCusto = *max_element(temposSolucao.begin(), temposSolucao.end());
 
+    // Encontra a linha com o maior custo da solução
     auto iteradorMaiorCusto = find(temposSolucao.begin(), temposSolucao.end(), melhorCusto);
     int linhaMaiorCusto = distance(temposSolucao.begin(), iteradorMaiorCusto);
 
     vector<int> trocaParaFazer{0, 0, 0, 0}; // primeiro linha, linha subs, primeiro prod, prod subs
 
+    // Iterando pela linha de maior custo
     for (int j = 0; j < solucao[linhaMaiorCusto].size(); j++)
     {
         for (int k = linhaMaiorCusto + 1; k < solucao.size(); k++)
@@ -639,10 +657,13 @@ vector<int> buscaMelhorCustoReInsertion(vector<vector<int>> &solucao, vector<vec
             for (int l = 0; l < solucao[k].size() + 1; l++)
             {
                 vector<int> temposSolucaoAtual = temposSolucao;
+
+                // Simulação do custo caso fizesse a inserção do produto em outras linhas
                 temposSolucaoAtual = calculoCustoNovoReInsertion(solucao, matrizPreparacao, vetorProdutos, temposSolucao, linhaMaiorCusto, k, j, l);
 
                 int custoAtual = *max_element(temposSolucaoAtual.begin(), temposSolucaoAtual.end());
 
+                // Se o custo reduziu
                 if (custoAtual < melhorCusto)
                 {
                     melhorCusto = custoAtual;
@@ -662,14 +683,17 @@ vector<vector<int>> novaSolucaoReInsertion(vector<vector<int>> &solucao, vector<
 {
     vector<vector<int>> novaSolucao = solucao;
 
+    // Busca qual seria a melhor inserção para fazer dada a solução
     vector<int> indicesTroca = buscaMelhorCustoReInsertion(novaSolucao, matrizPreparacao, vetorProdutos, temposSolucao);
     int linha1 = indicesTroca[0];
     int linha2 = indicesTroca[1];
     int indicePrimeiroProd = indicesTroca[2];
     int indiceSubsProd = indicesTroca[3];
 
+    // Se linha2 for 0, não encontrou nenhuma melhoria
     if (linha2 != 0)
     {
+        // Realiza a inserção
         int prod = novaSolucao[linha1][indicePrimeiroProd];
         novaSolucao[linha1].erase(novaSolucao[linha1].begin() + indicePrimeiroProd);
         novaSolucao[linha2].insert(novaSolucao[linha2].begin() + indiceSubsProd, prod);
@@ -695,7 +719,7 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
     vector<int> temposAtuais = temposSolucao;
     vector<int> temposAnteriores = temposAtuais;
 
-    // Controle de casos e
+    // Controle de casos
     int caso = 0;
 
     while (1)
@@ -750,6 +774,8 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
                 // Passa para a próxima vizinhança
                 caso += 1;
             }
+
+            // Se falhar, passou por todos os movimentos de vizinhança sem realizar melhoria
             else
             {
                 break;
@@ -757,7 +783,6 @@ vector<vector<int>> melhorarLinhas(vector<vector<int>> &solucao, vector<vector<i
         }
     }
 
-    // Retorna a melhor solução encontrada
     return melhorSolucao;
 }
 
@@ -839,7 +864,7 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
                 buscaLocalUtilizada[i] = 0;
             }
 
-            // Atualização dos tempos 
+            // Atualização dos tempos
             temposAnteriores = temposAtuais;
         }
 
@@ -875,12 +900,6 @@ vector<vector<int>> melhorarLinhasRVND(vector<vector<int>> &solucao, vector<vect
 
 vector<int> listaCandidatosRestritos(vector<int> &vetorProdutos, vector<int> &indicesProdutosUsados, float alfa)
 {
-    // Criar lista de candidatos restritos
-    //      1° - Escolher o produto com o menor tempo de produção
-    //      2° - Dividir o tempo do produto escolhido pelo alfa -> critério de seleção -> valorAceitavel
-    //      3° - Passar por todo o vetorProduto, adicionando os produtos com tempo maior que o valorAceitavel
-    //      4° - Retornar candidatos
-    // Encontrar o menor
 
     // Fazer uma lista com os índices dos produtos não usados
     vector<int> indicesProdutosNaoUsados;
@@ -968,7 +987,7 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
         indicesProdutosUsados.push_back(indiceProdutoEscolhido);
 
         // Adicionando produto de indiceProdutoEscolhido na solução
-        solucaoInicial[linha].push_back(vetorProdutos[indiceProdutoEscolhido]);
+        solucaoInicial[linha].push_back(indiceProdutoEscolhido);
 
         linha += 1;
 
@@ -984,10 +1003,10 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
             int produtoCerto = candidatosValidos[indiceProdutoValido];
 
             // Removendo o indiceProdutoValido de indicesProdutosNaoUsados
-            indicesProdutosNaoUsados.erase(remove(indicesProdutosNaoUsados.begin(), indicesProdutosNaoUsados.end(), indiceProdutoValido), indicesProdutosNaoUsados.end());
+            indicesProdutosNaoUsados.erase(remove(indicesProdutosNaoUsados.begin(), indicesProdutosNaoUsados.end(), produtoCerto), indicesProdutosNaoUsados.end());
 
             // Adicionando o indiceProdutoValido em indicesProdutosUsados
-            indicesProdutosUsados.push_back(indiceProdutoValido);
+            indicesProdutosUsados.push_back(produtoCerto);
 
             // Adicionar produto de indiceProdutoValido na solução
             solucaoInicial[linha].push_back(produtoCerto);
@@ -1031,6 +1050,7 @@ vector<vector<int>> grasp(vector<vector<int>> &matrizPreparacao, vector<int> &ve
 
 vector<vector<int>> perturbacaoHorizontal(vector<vector<int>> &solucao, int numeroLinhas)
 {
+
     // Cria uma cópia da solução original
     vector<vector<int>> solucaoCopia = solucao;
 
@@ -1045,14 +1065,18 @@ vector<vector<int>> perturbacaoHorizontal(vector<vector<int>> &solucao, int nume
     // Cria um vetor para armazenar as linhas não usadas
     vector<int> linhasNaoUsadas(numeroLinhas);
     for (int i = 0; i < numeroLinhas; i++)
+    {
         linhasNaoUsadas[i] = i;
+    }
 
     // Cria um vetor para armazenar as linhas afetadas
     vector<int> linhasAfetadas = linhasNaoUsadas;
     linhasAfetadas.resize(numeroLinhasAfetadas);
 
+    // Se o número que foi gerado aleatoriamente é diferente da número de linhas
     if (numeroLinhasAfetadas != numeroLinhas)
     {
+        // Escolhe, de maneira, aleatória, quais linhas serão usadas para realizar a perturbação
         for (int i = 0; i < numeroLinhasAfetadas; i++)
         {
             // Seleciona aleatoriamente uma posição no vetor de linhas não usadas
@@ -1065,6 +1089,8 @@ vector<vector<int>> perturbacaoHorizontal(vector<vector<int>> &solucao, int nume
             linhasAfetadas[i] = realLinha;
         }
     }
+
+    // Caso não, as linhas que serão afetadas
     else
     {
         linhasAfetadas = linhasNaoUsadas;
@@ -1103,6 +1129,7 @@ vector<vector<int>> perturbacaoHorizontal(vector<vector<int>> &solucao, int nume
 
 vector<vector<int>> perturbacaoVertical(vector<vector<int>> &solucao, int numeroLinhas)
 {
+
     // Cria uma cópia da solução original
     vector<vector<int>> solucaoCopia = solucao;
 
@@ -1161,10 +1188,11 @@ vector<vector<int>> perturbacaoVertical(vector<vector<int>> &solucao, int numero
             // Produto que vai sair da linha pivô
             int produtoSaida = solucaoCopia[linhaEscolhida][i];
 
-            // Escolher qual a linha e o produto dela que será trocado de maneira aleatória
+            // Escolher qual a linha de maneira aleatória
             std::uniform_int_distribution<int> linhaProduto(0, linhasAfetadas.size() - 1);
             int linhaTroca = linhasAfetadas[linhaProduto(gen)];
 
+            // Escolher qual o produto, da linha, que será trocado de maneira aleatória
             std::uniform_int_distribution<int> posicaoProduto(0, solucaoCopia[linhaTroca].size() - 1);
             int sorteioProduto = posicaoProduto(gen);
 
@@ -1196,6 +1224,7 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
         // vector<vector<int>> solucaoInicial = grasp(matrizPreparacao, vetorProdutos, numeroLinhas, 1, 1);
         vector<vector<int>> solucaoInicial = gerarSolucaoGulosa(vetorProdutos.size(), numeroLinhas, matrizPreparacao, vetorProdutos);
 
+        // Escolhe, de maneira aleatória, qual a pertubação que será utilizada
         int perturbacaoUtilizada = dist(gen);
 
         switch (perturbacaoUtilizada)
@@ -1210,17 +1239,14 @@ vector<vector<int>> ils(vector<vector<int>> &matrizPreparacao, vector<int> &veto
 
         vector<int> novosTempos = temposProducao(solucaoInicial, matrizPreparacao, vetorProdutos);
 
-        // Padrão: VND
-
+        // Tenta melhorar a solução
         vector<vector<int>> solucaoComMelhorias = melhorarLinhas(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
-
-        // Alternativo: RVND
-        // vector<vector<int>> solucaoComMelhorias = melhorarLinhasRVND(solucaoInicial, matrizPreparacao, vetorProdutos, novosTempos);
 
         vector<int> tempoComMelhorias = temposProducao(solucaoComMelhorias, matrizPreparacao, vetorProdutos);
 
         int tempoMelhor = *max_element(tempoComMelhorias.begin(), tempoComMelhorias.end());
 
+        // Atualiza o tempo e a melhor solução
         if (r == 0 || tempoMelhor < tempoAtual)
         {
             tempoAtual = tempoMelhor;
